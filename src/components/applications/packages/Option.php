@@ -6,12 +6,14 @@ use extas\components\THasDescription;
 use extas\components\THasName;
 use extas\components\THasType;
 use deflou\interfaces\applications\packages\IOption;
+use extas\components\THasValue;
 
 class Option extends Item implements IOption
 {
     use THasName;
     use THasDescription;
     use THasType;
+    use THasValue;
 
     public function getDefault(): mixed
     {
