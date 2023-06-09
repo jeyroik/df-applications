@@ -1,3 +1,7 @@
+# 0.2.1
+
+- Added config for instances for extas.
+
 # 0.2.0
 
 - Added instances support.
