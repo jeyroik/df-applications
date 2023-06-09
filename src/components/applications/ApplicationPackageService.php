@@ -58,19 +58,7 @@ class ApplicationPackageService extends Item implements IApplicationPackageServi
 
         $packageName = $package->getPackage();
         $composerPath = $this->getInstallPath();
-        $input = new ArrayInput([
-            'command' => 'require',
-            'packages' => [$packageName],
-            '--working-dir' => $composerPath
-        ]);
-        
-        $output = new BufferedOutput(BufferedOutput::VERBOSITY_VERY_VERBOSE);
-        
-        $application = new Application();
-        $application->add(new RequireCommand());
-        $application->setDefaultCommand('require');
-        $application->setAutoExit(false);
-        $application->run($input, $output);
+        $this->requirePackage($packageName, $composerPath);
         $installed = true;
 
         if ($this->needCheckAfterInstall()) {
@@ -79,9 +67,7 @@ class ApplicationPackageService extends Item implements IApplicationPackageServi
             }
             
             file_put_contents('/tmp/df.log', date('[Y-m-d H:i:s] ').$output->fetch()."\n", FILE_APPEND);
-
             $resolver = $package->buildOptions()->getResolver();
-
             $installed = class_exists($resolver);
 
             if ($installed) {
@@ -176,6 +162,23 @@ class ApplicationPackageService extends Item implements IApplicationPackageServi
         $this->config[static::FIELD__INSTALL_CHECK] = $need;
 
         return $this;
+    }
+
+    protected function requirePackage(string $packageName, string $composerPath): void
+    {
+        $input = new ArrayInput([
+            'command' => 'require',
+            'packages' => [$packageName],
+            '--working-dir' => $composerPath
+        ]);
+        
+        $output = new BufferedOutput(BufferedOutput::VERBOSITY_VERY_VERBOSE);
+        
+        $application = new Application();
+        $application->add(new RequireCommand());
+        $application->setDefaultCommand('require');
+        $application->setAutoExit(false);
+        $application->run($input, $output);
     }
 
     protected function getSubjectForExtension(): string
