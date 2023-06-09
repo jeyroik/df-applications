@@ -61,10 +61,10 @@ class InstallAppsCommand extends Command
 
         if (!empty($installed)) {
             $output->writeln(['Installed packages: ']);
-            $output->writeln($installed);
+            $output->writeln(array_column($installed, 'title'));
 
             $output->writeln(['Not installed packages: ']);
-            $output->writeln($notInstalled);
+            $output->writeln(array_column($notInstalled, 'title'));
 
             $end = time() - $start;
             $output->writeln(['Ready for ' . $end . ' s.']);
