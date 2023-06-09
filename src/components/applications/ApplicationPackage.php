@@ -14,6 +14,7 @@ use deflou\components\applications\packages\operations\THasOperations;
 use deflou\components\applications\packages\options\THasOptions;
 use deflou\components\applications\packages\vendors\THasVendor;
 use deflou\interfaces\applications\IApplicationPackage;
+use extas\components\THasVersion;
 
 class ApplicationPackage extends Item implements IApplicationPackage
 {
@@ -22,6 +23,7 @@ class ApplicationPackage extends Item implements IApplicationPackage
     use THasDescription;
     use THasState;
     use THasType;
+    use THasVersion;
     use THasAvatar;
     use THasVendor;
     use THasOptions;

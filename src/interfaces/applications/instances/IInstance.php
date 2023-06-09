@@ -12,10 +12,11 @@ use extas\interfaces\IHasClass;
 use extas\interfaces\IHasDescription;
 use extas\interfaces\IHasName;
 use extas\interfaces\IHasType;
+use extas\interfaces\IHasVersion;
 use extas\interfaces\IHaveUUID;
 use extas\interfaces\IItem;
 
-interface IInstance extends IItem, IHasName, IHasDescription, IHasClass, IHasType, IHaveUUID,
+interface IInstance extends IItem, IHasName, IHasDescription, IHasClass, IHasType, IHaveUUID, IHasVersion,
     IHaveAvatar, IHaveVendor, IHaveOptions, IHaveEvents, IHaveOperations, IHaveApplication
 {
     public const SUBJECT = 'df.application.instance';

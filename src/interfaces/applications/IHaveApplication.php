@@ -8,5 +8,5 @@ interface IHaveApplication
     public function getApplicationId(): string;
     public function getApplication(): ?IApplicationPackage;
 
-    public function setApplicationId(string $id): self;
+    public function setApplicationId(string $id): static;
 }

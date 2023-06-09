@@ -14,6 +14,7 @@ use extas\components\THasDescription;
 use extas\components\THasName;
 use extas\components\THasStringId;
 use extas\components\THasType;
+use extas\components\THasVersion;
 
 class Instance extends Item implements IInstance
 {
@@ -28,6 +29,7 @@ class Instance extends Item implements IInstance
     use THasClass;
     use THasType;
     use THasApplication;
+    use THasVersion;
 
     protected function getSubjectForExtension(): string
     {

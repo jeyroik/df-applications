@@ -19,7 +19,7 @@ trait THasApplication
         return $this->applicationPackages()->one([IApplicationPackage::FIELD__ID => $this->getApplicationId()]);
     }
 
-    public function setApplicationId(string $id): self
+    public function setApplicationId(string $id): static
     {
         $this->config[IHaveApplication::FIELD__APPLICATION_ID] = $id;
 

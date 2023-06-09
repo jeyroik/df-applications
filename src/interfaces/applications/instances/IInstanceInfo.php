@@ -17,7 +17,7 @@ interface IInstanceInfo extends IItem, IHasCreatedAt, IHaveUUID, IHaveApplicatio
     public const FIELD__INSTANCE_VENDOR_NAME = 'ivn';
 
     public const FIELD__TRIGGERS_COUNT = 'tc';
-    public const FIELD__REQUESTS_COUNT = 'ec';
+    public const FIELD__REQUESTS_COUNT = 'rc';
 
     /**
      * Only success requests count

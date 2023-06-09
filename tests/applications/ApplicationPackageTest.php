@@ -20,7 +20,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 /**
- * Class ItemTest
+ * Class ApplicationPackageTest
  * @author jeyroik <jeyroik@gmail.com>
  */
 class ApplicationPackageTest extends TestCase
@@ -43,8 +43,6 @@ class ApplicationPackageTest extends TestCase
         $this->deleteRepo('plugins');
         $this->deleteRepo('extensions');
         $this->deleteRepo('application_packages');
-
-        
 
         $finder = new Finder();
         $finder->name('composer.*');
