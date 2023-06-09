@@ -1,0 +1,85 @@
+{
+    "package": "jeyroik/df-test-service:0.*",
+    "name": "test-service",
+    "title": "Nothing",
+    "description": "Nothing service with nothing event and action",
+    "type": "public",
+    "avatar": "https://img.funcraft.ru/edu.png",
+    "options": {
+      "resolver": "deflou\\components\\applications\\ApplicationPackage",
+      "login": {
+        "type": "string",
+        "name": "login",
+        "title": "Login",
+        "description": "Login",
+        "default": "nothing",
+        "required": true,
+        "encode": true,
+        "hashing": false
+      },
+      "password": {
+        "type": "string",
+        "name": "login",
+        "title": "Login",
+        "description": "Login",
+        "default": "nothing",
+        "required": true,
+        "encode": false,
+        "hashing": true
+      },
+      "instructions": {
+        "events": {
+          "nothing_event": "Set any value for the Useless parameter."
+        },
+        "operations": {
+          "nothing_op": "Set any value for the Useless parameter"
+        }
+      }
+    },
+    "events": {
+      "nothing_event": {
+        "name": "nothing_event",
+        "title": "Nothing happens",
+        "description": "Occured when nothign happens",
+        "params": {
+          "param1": {
+            "name": "param1",
+            "title": "Useless parameter",
+            "compares" : { "eq" : "default", "neq" : "default", "like" : "default" },
+            "value": {
+              "type": "select",
+              "value": {
+                "n1": "Really nothing",
+                "n2": "Actually nothing"
+              }
+            }
+          }
+        }
+      }
+    },
+    "operations": {
+      "nothing_op": {
+        "name": "nothing_op",
+        "title": "Do nothing",
+        "description": "Do actually nothing",
+        "params": {
+          "param1": {
+            "name": "param1",
+            "title": "Useless parameter",
+            "value": {
+              "type": "text",
+              "value": "nothing"
+            }
+          }
+        }
+      }
+    },
+    "vendor": {
+      "name": "jeyroik",
+      "title": "Jey Roik",
+      "description": "Jey Roik",
+      "contacts": {
+        "email": "jeyroik@gmail.com"
+      }
+    }
+  }
