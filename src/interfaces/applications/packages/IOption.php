@@ -4,9 +4,10 @@ namespace deflou\interfaces\applications\packages;
 use extas\interfaces\IHasDescription;
 use extas\interfaces\IHasName;
 use extas\interfaces\IHasType;
+use extas\interfaces\IHasValue;
 use extas\interfaces\IItem;
 
-interface IOption extends IItem, IHasName, IHasDescription, IHasType
+interface IOption extends IItem, IHasName, IHasDescription, IHasType, IHasValue
 {
     public const SUBJECT = 'deflou.application.package.option';
 
