@@ -29,6 +29,7 @@ class ApplicationPackageTest extends TestCase
     use TSnuffRepository;
 
     public const PATH__SERVICE_JSON = __DIR__ . '/../resources/service.json';
+    public const PATH__SERVICE_JSON_2 = __DIR__ . '/../resources/service.2.json';
     public const PATH__INSTALL = __DIR__ . '/../tmp';
     protected array $serviceConfig = [];
 
@@ -174,6 +175,8 @@ class ApplicationPackageTest extends TestCase
         $this->assertEmpty($notInstalled);
 
         $this->assertTrue(ETypes::Text->is(ETypes::Text->value));
+
+        $this->assertTrue($appService->updatePackage($package->getId(), static::PATH__SERVICE_JSON_2));
     }
 
     protected function getPackageJsonDecoded(): array

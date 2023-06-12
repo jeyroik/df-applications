@@ -1,3 +1,7 @@
+# 0.4.0
+
+- Added `updatePackage()` for `ApplicationPackageService`.
+
 # 0.3.1
 
 - Added enum `ETypes` for option types.
