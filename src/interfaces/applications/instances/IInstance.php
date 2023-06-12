@@ -1,7 +1,6 @@
 <?php
 namespace deflou\interfaces\applications\instances;
 
-use deflou\interfaces\applications\IApplicationPackage;
 use deflou\interfaces\applications\IHaveApplication;
 use deflou\interfaces\applications\packages\avatars\IHaveAvatar;
 use deflou\interfaces\applications\packages\events\IHaveEvents;

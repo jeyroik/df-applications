@@ -47,6 +47,27 @@ class ApplicationPackageService extends Item implements IApplicationPackageServi
         return [$installed, $notInstalled];
     }
 
+    public function updatePackage(string $id, string $path): bool
+    {
+        /**
+         * @var IApplicationPackage $package
+         */
+        $package = $this->applicationPackages()->one([
+            IApplicationPackage::FIELD__ID => $id
+        ]);
+
+        $new = $this->createPackageByConfigPath($path, false);
+
+        if (!$package || !$new || ($package->getVersion() == $new->getVersion())) {
+            return false;
+        }
+
+        $new->setState(EStates::Pending->value)->setId($package->getId());
+        $this->applicationPackages()->update($new);
+
+        return $this->installPackage($new->getId());
+    }
+
     public function installPackage(string $id): bool
     {
         /**
@@ -67,7 +88,7 @@ class ApplicationPackageService extends Item implements IApplicationPackageServi
             }
             
             file_put_contents('/tmp/df.log', date('[Y-m-d H:i:s] ').$output->fetch()."\n", FILE_APPEND);
-            $resolver = $package->buildOptions()->getResolver();
+            $resolver = $package->getResolver();
             $installed = class_exists($resolver);
 
             if ($installed) {
@@ -92,14 +113,14 @@ class ApplicationPackageService extends Item implements IApplicationPackageServi
         return $this->applicationPackages()->all($query);
     }
 
-    public function createPackageByConfigPath(string $path): ?IApplicationPackage
+    public function createPackageByConfigPath(string $path, bool $saveAfterCreate = true): ?IApplicationPackage
     {
         $config = file_get_contents($path);
         $decoded = json_decode($config, true);
         $decoded[IHasState::FIELD__STATE] = EStates::Pending->value;
         $package = new ApplicationPackage($decoded);
 
-        return $this->applicationPackages()->create($package);
+        return $saveAfterCreate ? $this->applicationPackages()->create($package) : $package;
     }
 
     public function getPackageById(string $id, array $vendorNames = []): ?IApplicationPackage

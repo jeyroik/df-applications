@@ -1,6 +1,6 @@
 {
     "package": "jeyroik/df-test-service:0.*",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "test-service",
     "title": "Nothing",
     "description": "Nothing service with nothing event and action",

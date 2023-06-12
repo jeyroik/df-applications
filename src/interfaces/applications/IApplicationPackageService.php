@@ -26,6 +26,14 @@ interface IApplicationPackageService extends IItem
     public function installPackage(string $id): bool;
 
     /**
+     * @param string $id
+     * @param string $path for the new structure
+     * 
+     * @return bool is package updated
+     */
+    public function updatePackage(string $id, string $path): bool;
+
+    /**
      * Get packages by state
      *
      * @param EState $state
@@ -35,7 +43,7 @@ interface IApplicationPackageService extends IItem
      */
     public function getPackagesByState(EStates $state, array $vendorNames = []): array;
 
-    public function createPackageByConfigPath(string $path): ?IApplicationPackage;
+    public function createPackageByConfigPath(string $path, bool $saveAfterCreate = true): ?IApplicationPackage;
 
     public function getPackageById(string $id, array $vendorNames = []): ?IApplicationPackage;
 
