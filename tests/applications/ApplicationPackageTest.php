@@ -2,6 +2,7 @@
 
 use deflou\components\applications\ApplicationPackageService;
 use deflou\components\applications\packages\EStates;
+use deflou\components\applications\packages\options\ETypes;
 use deflou\interfaces\applications\IApplicationPackage;
 use deflou\interfaces\applications\packages\events\IEventParam;
 use deflou\interfaces\applications\packages\events\IEventParams;
@@ -171,6 +172,8 @@ class ApplicationPackageTest extends TestCase
         list($installed, $notInstalled) = $appService->checkPackages([$package]);
         $this->assertCount(1, $installed);
         $this->assertEmpty($notInstalled);
+
+        $this->assertTrue(ETypes::Text->is(ETypes::Text->value));
     }
 
     protected function getPackageJsonDecoded(): array
