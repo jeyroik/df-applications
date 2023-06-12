@@ -1,3 +1,9 @@
+# 1.0.0
+
+- Renamed practically all classes namespace.
+- `ApplicationPackage` renamed to `Application`.
+- `ApplicationPackageService` is divided to `AppReader` and `AppWriter`.
+
 # 0.4.0
 
 - Added `updatePackage()` for `ApplicationPackageService`.

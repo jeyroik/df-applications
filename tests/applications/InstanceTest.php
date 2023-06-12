@@ -1,7 +1,7 @@
 <?php
 
-use deflou\components\applications\ApplicationPackageService;
-use deflou\components\applications\instances\InstanceService;
+use deflou\components\applications\AppWriter;
+use deflou\components\instances\InstanceService;
 use extas\components\repositories\RepoItem;
 use extas\components\repositories\TSnuffRepository;
 use \PHPUnit\Framework\TestCase;
@@ -31,9 +31,9 @@ class InstanceTest extends TestCase
         $this->dropDatabase(__DIR__);
         $this->deleteRepo('plugins');
         $this->deleteRepo('extensions');
-        $this->deleteRepo('application_packages');
-        $this->deleteRepo('application_instances');
-        $this->deleteRepo('application_instances_info');
+        $this->deleteRepo('applications');
+        $this->deleteRepo('instances');
+        $this->deleteRepo('instances_info');
 
         $finder = new Finder();
         $finder->name('composer.*');
@@ -50,11 +50,11 @@ class InstanceTest extends TestCase
     public function testInstanceService()
     {
         $this->buildRepo(__DIR__ . '/../../vendor/jeyroik/extas-foundation/resources/', [
-            'application_packages' => [
+            'applications' => [
                 "namespace" => "tests\\tmp",
-                "item_class" => "deflou\\components\\applications\\ApplicationPackage",
+                "item_class" => "deflou\\components\\applications\\Application",
                 "pk" => "name",
-                "aliases" => ["applicationPackages", "application_packages", "appPackages"],
+                "aliases" => ["applications", "apps"],
                 "hooks" => [],
                 "code" => [
                     'create-before' => '\\' . RepoItem::class . '::setId($item);'
@@ -64,11 +64,11 @@ class InstanceTest extends TestCase
         ]);
 
         $this->buildRepo(__DIR__ . '/../../vendor/jeyroik/extas-foundation/resources/', [
-            'application_instances' => [
+            'instances' => [
                 "namespace" => "tests\\tmp",
-                "item_class" => "deflou\\components\\applications\\instances\\Instance",
+                "item_class" => "deflou\\components\\instances\\Instance",
                 "pk" => "name",
-                "aliases" => ["applicationInstances", "application_instances", "appInstances"],
+                "aliases" => ["instances"],
                 "hooks" => [],
                 "code" => [
                     'create-before' => '\\' . RepoItem::class . '::setId($item);'
@@ -78,11 +78,11 @@ class InstanceTest extends TestCase
         ]);
 
         $this->buildRepo(__DIR__ . '/../../vendor/jeyroik/extas-foundation/resources/', [
-            'application_instances_info' => [
+            'instances_info' => [
                 "namespace" => "tests\\tmp",
-                "item_class" => "deflou\\components\\applications\\instances\\InstanceInfo",
+                "item_class" => "deflou\\components\\instances\\InstanceInfo",
                 "pk" => "name",
-                "aliases" => ["applicationInstancesInfo", "application_instances_info", "appInstancesInfo"],
+                "aliases" => ["instancesInfo", "instances_info", "instancesInfo"],
                 "hooks" => [],
                 "code" => [
                     'create-before' => '\\' . RepoItem::class . '::setId($item);'
@@ -91,21 +91,21 @@ class InstanceTest extends TestCase
             ]
         ]);
 
-        $appService = new ApplicationPackageService([
-            ApplicationPackageService::FIELD__INSTALL_PATH => static::PATH__INSTALL,
-            ApplicationPackageService::FIELD__INSTALL_CHECK => false
+        $writer = new AppWriter([
+            AppWriter::FIELD__INSTALL_PATH => static::PATH__INSTALL,
+            AppWriter::FIELD__INSTALL_CHECK => false
         ]);
-        $package = $appService->createPackageByConfigPath(static::PATH__SERVICE_JSON);
+        $app = $writer->createAppByConfigPath(static::PATH__SERVICE_JSON);
 
         $instanceService = new InstanceService();
-        $instance = $instanceService->createInstanceFromApplication($package, 'jeyroik2');
+        $instance = $instanceService->createInstanceFromApplication($app, 'jeyroik2');
         $this->assertNotNull($instance);
-        $this->assertEquals($package->getResolver(), $instance->getClass());
+        $this->assertEquals($app->getResolver(), $instance->getClass());
 
         $info = $instanceService->getInstanceInfo($instance->getId());
         $this->assertNotNull($info);
 
-        $this->assertEquals($package->getId(), $info->getApplicationId());
+        $this->assertEquals($app->getId(), $info->getApplicationId());
         $this->assertNotNull($info->getApplication());
         $this->assertEquals('jeyroik', $info->getApplicationVendorName());
         
@@ -129,12 +129,5 @@ class InstanceTest extends TestCase
         $this->assertEquals('id2', $info->getInstanceId());
         $this->assertEquals('vendor1', $info->getApplicationVendorName());
         $this->assertEquals('vendor2', $info->getInstanceVendorName());
-    }
-
-    protected function getPackageJsonDecoded(): array
-    {
-        return empty($this->serviceConfig) 
-            ? $this->serviceConfig = json_decode(file_get_contents(static::PATH__SERVICE_JSON), true)
-            : $this->serviceConfig;
     }
 }

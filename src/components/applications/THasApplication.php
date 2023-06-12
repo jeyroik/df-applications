@@ -1,7 +1,7 @@
 <?php
 namespace deflou\components\applications;
 
-use deflou\interfaces\applications\IApplicationPackage;
+use deflou\interfaces\applications\IApplication;
 use deflou\interfaces\applications\IHaveApplication;
 
 /**
@@ -14,9 +14,9 @@ trait THasApplication
         return $this->config[IHaveApplication::FIELD__APPLICATION_ID] ?? '';
     }
 
-    public function getApplication(): ?IApplicationPackage
+    public function getApplication(): ?IApplication
     {
-        return $this->applicationPackages()->one([IApplicationPackage::FIELD__ID => $this->getApplicationId()]);
+        return $this->applications()->one([IApplication::FIELD__ID => $this->getApplicationId()]);
     }
 
     public function setApplicationId(string $id): static
