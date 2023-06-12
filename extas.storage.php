@@ -7,9 +7,9 @@ return [
     "tables" => [
         "application_packages" => [
             "namespace" => "deflou\\repositories",
-            "item_class" => "deflou\\components\\applications\\ApplicationPackage",
+            "item_class" => "deflou\\components\\applications\\Application",
             "pk" => "name",
-            "aliases" => ["applicationPackages", "application_packages", "appPackages"],
+            "aliases" => ["applications", "apps"],
             "hooks" => [],
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'
@@ -18,9 +18,9 @@ return [
         ],
         "application_instances" => [
             "namespace" => "deflou\\repositories",
-            "item_class" => "deflou\\components\\applications\\instances\\Instance",
+            "item_class" => "deflou\\components\\instances\\Instance",
             "pk" => "name",
-            "aliases" => ["applicationInstances", "application_instances", "appInstances"],
+            "aliases" => ["instances", "instances"],
             "hooks" => [],
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'
@@ -29,9 +29,9 @@ return [
         ],
         "application_instances_info" => [
             "namespace" => "deflou\\repositories",
-            "item_class" => "deflou\\components\\applications\\instances\\InstanceInfo",
+            "item_class" => "deflou\\components\\instances\\InstanceInfo",
             "pk" => "name",
-            "aliases" => ["applicationInstancesInfo", "application_instances_info", "appInstancesInfo"],
+            "aliases" => ["instancesInfo", "instances_info", "instancesInfo"],
             "hooks" => [],
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'

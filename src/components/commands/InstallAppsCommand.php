@@ -5,8 +5,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use deflou\components\applications\ApplicationPackageService;
-use deflou\components\applications\packages\EStates;
+use deflou\components\applications\AppReader;
+use deflou\components\applications\AppWriter;
+use deflou\components\applications\EStates;
 
 class InstallAppsCommand extends Command
 {
@@ -43,27 +44,30 @@ class InstallAppsCommand extends Command
     {
         $path = $input->getOption(static::OPTION__PATH);
 
-        $appService = new ApplicationPackageService([
-            ApplicationPackageService::FIELD__INSTALL_PATH => $path,
-            ApplicationPackageService::FIELD__INSTALL_CHECK => false
+        $reader = new AppReader([
+            AppReader::FIELD__INSTALL_PATH => $path
+        ]);
+        $writer = new AppWriter([
+            AppWriter::FIELD__INSTALL_PATH => $path,
+            AppWriter::FIELD__INSTALL_CHECK => false
         ]);
 
-        $packages = $appService->getPackagesByState(EStates::Accepted);
+        $apps = $reader->getAppsByState(EStates::Accepted);
 
         $output->writeln(['Begin installation...']);
         $start = time();
 
-        foreach ($packages as $p) {
-            $appService->installPackage($p->getId());
+        foreach ($apps as $app) {
+            $writer->installApp($app->getId());
         }
 
-        list($installed, $notInstalled) = $appService->checkPackages($packages);
+        list($installed, $notInstalled) = $reader->checkApps($apps);
 
         if (!empty($installed)) {
-            $output->writeln(['Installed packages: ']);
+            $output->writeln(['Installed applications: ']);
             $output->writeln(array_column($installed, 'title'));
 
-            $output->writeln(['Not installed packages: ']);
+            $output->writeln(['Not installed applications: ']);
             $output->writeln(array_column($notInstalled, 'title'));
 
             $end = time() - $start;

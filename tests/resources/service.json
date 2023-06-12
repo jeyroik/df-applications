@@ -6,7 +6,7 @@
     "description": "Nothing service with nothing event and action",
     "type": "public",
     "avatar": "https://img.funcraft.ru/edu.png",
-    "resolver": "deflou\\components\\applications\\ApplicationPackage",
+    "resolver": "deflou\\components\\applications\\Application",
     "options": {
       "login": {
         "type": "string",
