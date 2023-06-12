@@ -1,3 +1,7 @@
+# 0.3.1
+
+- Added enum `ETypes` for option types.
+
 # 0.3.0
 
 - Added `getResolver()` method to a `IApplicationPackage` and `IINstance`.
