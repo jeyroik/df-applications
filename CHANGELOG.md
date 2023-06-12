@@ -1,3 +1,7 @@
+# 1.2.0
+
+- Added `IAppInfo`.
+
 # 1.1.0
 
 - Added `IInstanceService::getInstancesByApp(string $appId, array $insVendorNames): IInstance[]`.

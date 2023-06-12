@@ -1,7 +1,13 @@
 <?php
 
+use deflou\components\applications\AppReader;
 use deflou\components\applications\AppWriter;
 use deflou\components\instances\InstanceService;
+use deflou\components\plugins\applications\PluginUpdateAppInfoDelta;
+use deflou\components\plugins\applications\PluginUpdateAppInfoInstances;
+use deflou\interfaces\stages\IStageInstanceCreated;
+use deflou\interfaces\stages\IStageInstanceInfoUpdated;
+use extas\components\plugins\Plugin;
 use extas\components\repositories\RepoItem;
 use extas\components\repositories\TSnuffRepository;
 use \PHPUnit\Framework\TestCase;
@@ -24,31 +30,6 @@ class InstanceTest extends TestCase
     {
         putenv("EXTAS__CONTAINER_PATH_STORAGE_LOCK=vendor/jeyroik/extas-foundation/resources/container.dist.json");
         $this->buildBasicRepos();
-    }
-
-    protected function tearDown(): void
-    {
-        $this->dropDatabase(__DIR__);
-        $this->deleteRepo('plugins');
-        $this->deleteRepo('extensions');
-        $this->deleteRepo('applications');
-        $this->deleteRepo('instances');
-        $this->deleteRepo('instances_info');
-
-        $finder = new Finder();
-        $finder->name('composer.*');
-        foreach ($finder->in(__DIR__ . '/../tmp/')->files() as $file) {
-            unlink($file->getRealPath());
-        }
-
-        if (is_dir(__DIR__ . '/../tmp/vendor')){
-            $fs = new Filesystem();
-            $fs->remove([__DIR__ . '/../tmp/vendor']);
-        }
-    }
-
-    public function testInstanceService()
-    {
         $this->buildRepo(__DIR__ . '/../../vendor/jeyroik/extas-foundation/resources/', [
             'applications' => [
                 "namespace" => "tests\\tmp",
@@ -59,6 +40,20 @@ class InstanceTest extends TestCase
                 "code" => [
                     'create-before' => '\\' . RepoItem::class . '::setId($item);'
                                     .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'name\']);'
+                ]
+            ]
+        ]);
+
+        $this->buildRepo(__DIR__ . '/../../vendor/jeyroik/extas-foundation/resources/', [
+            'applications_info' => [
+                "namespace" => "tests\\tmp",
+                "item_class" => "deflou\\components\\applications\\info\\AppInfo",
+                "pk" => "id",
+                "aliases" => ["applications_info", "appInfo"],
+                "hooks" => [],
+                "code" => [
+                    'create-before' => '\\' . RepoItem::class . '::setId($item);'
+                                    .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'aid\']);'
                 ]
             ]
         ]);
@@ -81,21 +76,57 @@ class InstanceTest extends TestCase
             'instances_info' => [
                 "namespace" => "tests\\tmp",
                 "item_class" => "deflou\\components\\instances\\InstanceInfo",
-                "pk" => "name",
+                "pk" => "id",
                 "aliases" => ["instancesInfo", "instances_info", "instancesInfo"],
                 "hooks" => [],
                 "code" => [
                     'create-before' => '\\' . RepoItem::class . '::setId($item);'
-                                    .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'name\']);'
+                                    .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'iid\']);'
                 ]
             ]
         ]);
+    }
 
+    protected function tearDown(): void
+    {
+        $this->dropDatabase(__DIR__);
+        $this->deleteRepo('plugins');
+        $this->deleteRepo('extensions');
+        $this->deleteRepo('applications');
+        $this->deleteRepo('applications_info');
+        $this->deleteRepo('instances');
+        $this->deleteRepo('instances_info');
+
+        $finder = new Finder();
+        $finder->name('composer.*');
+        foreach ($finder->in(__DIR__ . '/../tmp/')->files() as $file) {
+            unlink($file->getRealPath());
+        }
+
+        if (is_dir(__DIR__ . '/../tmp/vendor')){
+            $fs = new Filesystem();
+            $fs->remove([__DIR__ . '/../tmp/vendor']);
+        }
+    }
+
+    public function testInstanceService()
+    {
         $writer = new AppWriter([
             AppWriter::FIELD__INSTALL_PATH => static::PATH__INSTALL,
             AppWriter::FIELD__INSTALL_CHECK => false
         ]);
+        $writer->plugins()->create(new Plugin([
+            Plugin::FIELD__CLASS => PluginUpdateAppInfoInstances::class,
+            Plugin::FIELD__STAGE => IStageInstanceCreated::NAME
+        ]));
+        $writer->plugins()->create(new Plugin([
+            Plugin::FIELD__CLASS => PluginUpdateAppInfoDelta::class,
+            Plugin::FIELD__STAGE => IStageInstanceInfoUpdated::NAME
+        ]));
         $app = $writer->createAppByConfigPath(static::PATH__SERVICE_JSON);
+        $reader = new AppReader();
+        $appInfo = $reader->getAppInfo($app->getId());
+        $this->assertNotNull($appInfo);
 
         $instanceService = new InstanceService();
         $instance = $instanceService->createInstanceFromApplication($app, 'jeyroik2');
@@ -115,13 +146,21 @@ class InstanceTest extends TestCase
 
         $now = time();
 
-        $info->incTriggerCount(1)->incRequestsCount(2)->incExecutionsCount(3)->incRating(1)->setLastExecutedAt($now);
+        $info->incTriggersCount(1)->incRequestsCount(2)->incExecutionsCount(3)->incRating(1)->setLastExecutedAt($now);
 
-        $this->assertEquals(1, $info->getTriggerCount());
+        $this->assertEquals(1, $info->getTriggersCount());
         $this->assertEquals(2, $info->getRequestsCount());
         $this->assertEquals(3, $info->getExecutionsCount());
         $this->assertEquals(1, $info->getRating());
         $this->assertEquals($now, $info->getLastExecutedAt());
+
+        $appInfo = $reader->getAppInfo($app->getId());
+        $this->assertEquals(1, $appInfo->getInstancesCount());
+        $this->assertEquals(0, $appInfo->getTriggersCount());
+
+        $instanceService->updateInstanceInfo($info);
+        $appInfo = $reader->getAppInfo($app->getId());
+        $this->assertEquals(1, $appInfo->getTriggersCount());
 
         $info->setApplicationId('id1')->setApplicationVendorName('vendor1')->setInstanceId('id2')->setInstanceVendorName('vendor2');
 

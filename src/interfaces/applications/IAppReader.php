@@ -3,6 +3,7 @@ namespace deflou\interfaces\applications;
 
 use extas\interfaces\IItem;
 use deflou\components\applications\EStates;
+use deflou\interfaces\applications\info\IAppInfo;
 
 interface IAppReader extends IItem, IHaveInstallPath
 {
@@ -26,6 +27,8 @@ interface IAppReader extends IItem, IHaveInstallPath
     public function getAppsByState(EStates $state, array $vendorNames = []): array;
 
     public function getAppById(string $id, array $vendorNames = []): ?IApplication;
+
+    public function getAppInfo(string $appId): ?IAppInfo;
 
     /**
      * Get apps by vendor name

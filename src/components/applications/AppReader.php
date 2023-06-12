@@ -7,10 +7,12 @@ use deflou\components\applications\EStates;
 use deflou\interfaces\applications\IApplication;
 use deflou\interfaces\applications\IApplicationPackage;
 use deflou\interfaces\applications\IAppReader;
+use deflou\interfaces\applications\info\IAppInfo;
 use deflou\interfaces\applications\vendors\IVendor;
 
 /**
  * @method IRepository applications()
+ * @method IRepository appInfo()
  */
 class AppReader extends Item implements IAppReader
 {
@@ -68,6 +70,13 @@ class AppReader extends Item implements IAppReader
         }
 
         return $this->applications()->one($query);
+    }
+
+    public function getAppInfo(string $appId): ?IAppInfo
+    {
+        return $this->appInfo()->one([
+            IAppInfo::FIELD__APPLICATION_ID => $appId
+        ]);
     }
 
     public function getAppsByVendor(array $names): array

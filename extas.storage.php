@@ -5,7 +5,7 @@ use extas\components\repositories\RepoItem;
 return [
     "name" => "jeyroik/df-applications",
     "tables" => [
-        "application_packages" => [
+        "applications" => [
             "namespace" => "deflou\\repositories",
             "item_class" => "deflou\\components\\applications\\Application",
             "pk" => "name",
@@ -16,7 +16,18 @@ return [
                                   .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'name\']);'
             ]
         ],
-        "application_instances" => [
+        "applications_info" => [
+            "namespace" => "deflou\\repositories",
+            "item_class" => "deflou\\components\\applications\\info\\AppInfo",
+            "pk" => "id",
+            "aliases" => ["applications_info", "appInfo"],
+            "hooks" => [],
+            "code" => [
+                'create-before' => '\\' . RepoItem::class . '::setId($item);'
+                                  .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'aid\']);'
+            ]
+        ],
+        "instances" => [
             "namespace" => "deflou\\repositories",
             "item_class" => "deflou\\components\\instances\\Instance",
             "pk" => "name",
@@ -27,15 +38,17 @@ return [
                                   .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'name\']);'
             ]
         ],
-        "application_instances_info" => [
+        "instances_info" => [
             "namespace" => "deflou\\repositories",
             "item_class" => "deflou\\components\\instances\\InstanceInfo",
-            "pk" => "name",
+            "pk" => "id",
             "aliases" => ["instancesInfo", "instances_info", "instancesInfo"],
             "hooks" => [],
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'
-                                  .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'iid\']);'
+                                  .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'iid\']);',
+                'one-after' => '$result->resetDelta();',
+                'all-after' => 'foreach ($result as $index => $item) { $item->resetDelta(); $result[$index] = $item; }'
             ]
         ],
     ]
