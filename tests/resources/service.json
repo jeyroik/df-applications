@@ -5,8 +5,8 @@
     "description": "Nothing service with nothing event and action",
     "type": "public",
     "avatar": "https://img.funcraft.ru/edu.png",
+    "resolver": "deflou\\components\\applications\\ApplicationPackage",
     "options": {
-      "resolver": "deflou\\components\\applications\\ApplicationPackage",
       "login": {
         "type": "string",
         "name": "login",
@@ -26,14 +26,6 @@
         "required": true,
         "encode": false,
         "hashing": true
-      },
-      "instructions": {
-        "events": {
-          "nothing_event": "Set any value for the Useless parameter."
-        },
-        "operations": {
-          "nothing_op": "Set any value for the Useless parameter"
-        }
       }
     },
     "events": {

@@ -36,7 +36,7 @@ class ApplicationPackageService extends Item implements IApplicationPackageServi
         $notInstalled = [];
 
         foreach ($packages as $package) {
-            $resolver = $package->buildOptions()->getResolver();
+            $resolver = $package->getResolver();
             if (class_exists($resolver)) {
                 $installed[] = $package;
             } else {

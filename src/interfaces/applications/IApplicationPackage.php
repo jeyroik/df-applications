@@ -9,13 +9,14 @@ use extas\interfaces\IHaveUUID;
 use extas\interfaces\IItem;
 use deflou\interfaces\applications\packages\avatars\IHaveAvatar;
 use deflou\interfaces\applications\packages\events\IHaveEvents;
+use deflou\interfaces\applications\packages\IHaveResolver;
 use deflou\interfaces\applications\packages\operations\IHaveOperations;
 use deflou\interfaces\applications\packages\options\IHaveOptions;
 use deflou\interfaces\applications\packages\vendors\IHaveVendor;
 use extas\interfaces\IHasVersion;
 
 interface IApplicationPackage extends IItem, IHaveUUID, IHasName, IHasDescription, IHasType, IHasState, IHasVersion,
-    IHaveVendor,  IHaveEvents,  IHaveOperations, IHaveAvatar, IHaveOptions
+    IHaveVendor,  IHaveEvents,  IHaveOperations, IHaveAvatar, IHaveOptions, IHaveResolver
 {
     public const SUBJECT = 'deflou.appication.package';
 

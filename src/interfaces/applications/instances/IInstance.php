@@ -5,6 +5,7 @@ use deflou\interfaces\applications\IApplicationPackage;
 use deflou\interfaces\applications\IHaveApplication;
 use deflou\interfaces\applications\packages\avatars\IHaveAvatar;
 use deflou\interfaces\applications\packages\events\IHaveEvents;
+use deflou\interfaces\applications\packages\IHaveResolver;
 use deflou\interfaces\applications\packages\operations\IHaveOperations;
 use deflou\interfaces\applications\packages\options\IHaveOptions;
 use deflou\interfaces\applications\packages\vendors\IHaveVendor;
@@ -17,7 +18,7 @@ use extas\interfaces\IHaveUUID;
 use extas\interfaces\IItem;
 
 interface IInstance extends IItem, IHasName, IHasDescription, IHasClass, IHasType, IHaveUUID, IHasVersion,
-    IHaveAvatar, IHaveVendor, IHaveOptions, IHaveEvents, IHaveOperations, IHaveApplication
+    IHaveAvatar, IHaveVendor, IHaveOptions, IHaveEvents, IHaveOperations, IHaveApplication, IHaveResolver
 {
     public const SUBJECT = 'df.application.instance';
 }

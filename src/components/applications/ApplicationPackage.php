@@ -12,6 +12,7 @@ use deflou\components\applications\packages\avatars\THasAvatar;
 use deflou\components\applications\packages\events\THasEvents;
 use deflou\components\applications\packages\operations\THasOperations;
 use deflou\components\applications\packages\options\THasOptions;
+use deflou\components\applications\packages\THasResolver;
 use deflou\components\applications\packages\vendors\THasVendor;
 use deflou\interfaces\applications\IApplicationPackage;
 use extas\components\THasVersion;
@@ -29,6 +30,7 @@ class ApplicationPackage extends Item implements IApplicationPackage
     use THasOptions;
     use THasEvents;
     use THasOperations;
+    use THasResolver;
 
     public function getPackage(): string
     {
