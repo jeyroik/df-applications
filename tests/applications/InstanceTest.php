@@ -129,5 +129,13 @@ class InstanceTest extends TestCase
         $this->assertEquals('id2', $info->getInstanceId());
         $this->assertEquals('vendor1', $info->getApplicationVendorName());
         $this->assertEquals('vendor2', $info->getInstanceVendorName());
+
+        $instances = $instanceService->getInstancesByApp($app->getId(), ['jeyroik2']);
+        $this->assertCount(1, $instances);
+
+        $grouped = $instanceService->groupInstancesByApp($instances);
+
+        $this->assertArrayHasKey($app->getId(), $grouped);
+        $this->assertCount(1, $grouped[$app->getId()]);
     }
 }

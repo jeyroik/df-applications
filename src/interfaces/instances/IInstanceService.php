@@ -10,7 +10,22 @@ interface IInstanceService extends IItem
 
     public function createInstanceFromApplication(IApplication $app, string $vendorName): ?IInstance;
 
+    /**
+     * @return IInstance[]
+     */
     public function getInstancesByVendor(array $vendorNames): array;
+
+    /**
+     * @return IInstance[]
+     */
+    public function getInstancesByApp(string $appId, array $insVendorNames): array;
+
+    /**
+     * @param IInstance[] $instances
+     * 
+     * @return array [<app.id> => [<instance>, ...], ...]
+     */
+    public function groupInstancesByApp(array $instances): array;
     public function getInstanceById(string $id, array $vendorNames = []): ?IInstance;
 
     public function getInstanceInfo(string $instanceId): ?IInstanceInfo;
