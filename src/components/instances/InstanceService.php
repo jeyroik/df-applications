@@ -16,6 +16,37 @@ use Ramsey\Uuid\Uuid;
  */
 class InstanceService extends Item implements IInstanceService
 {
+    /**
+     * @return IInstance[]
+     */
+    public function getInstancesByApp(string $appId, array $insVendorNames): array
+    {
+        $query = [
+            IInstance::FIELD__APPLICATION_ID => $appId
+        ];
+
+        if (!empty($insVendorNames)) {
+            $query[IInstance::FIELD__VENDOR . '.' . IVendor::FIELD__NAME] = $insVendorNames;
+        }
+
+        return $this->instances()->all($query);
+    }
+
+    public function groupInstancesByApp(array $instances): array
+    {
+        $insByApp = [];
+
+        foreach ($instances as $ins) {
+            if (!isset($insByApp[$ins->getApplicationId()])) {
+                $insByApp[$ins->getApplicationId()] = [];
+            }
+
+            $insByApp[$ins->getApplicationId()][] = $ins;
+        }
+
+        return $insByApp;
+    }
+
     public function createInstanceFromApplication(IApplication $app, string $vendorName): ?IInstance
     {
         $data = $app->__toArray();

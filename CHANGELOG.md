@@ -1,3 +1,8 @@
+# 1.1.0
+
+- Added `IInstanceService::getInstancesByApp(string $appId, array $insVendorNames): IInstance[]`.
+- Added `IInstanceService::groupInstancesByApp(array $instances): array`.
+
 # 1.0.0
 
 - Renamed practically all classes namespace.
