@@ -1,0 +1,12 @@
+{
+    "plugins": [
+        {
+            "class": "\\deflou\\components\\plugins\\applications\\PluginUpdateAppInfoInstances",
+            "stage": "deflou.instance.created"
+        },
+        {
+            "class": "\\deflou\\components\\plugins\\applications\\PluginUpdateAppInfoDelta",
+            "stage": "deflou.instance.info.updated"
+        }
+    ]
+}

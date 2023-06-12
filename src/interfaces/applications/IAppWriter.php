@@ -3,6 +3,7 @@ namespace deflou\interfaces\applications;
 
 use extas\interfaces\IItem;
 use deflou\components\applications\EStates;
+use deflou\interfaces\applications\info\IAppInfo;
 
 interface IAppWriter extends IItem, IHaveInstallPath
 {
@@ -36,6 +37,11 @@ interface IAppWriter extends IItem, IHaveInstallPath
      * @stage deflou.application.<application.name>.updated
      */
     public function updateApp(string $id, string $path): bool;
+
+    /**
+     * @stage deflou.application.info.updated
+     */
+    public function updateAppInfo(IAppInfo $appInfo): void;
 
     /**
      * @stage deflou.application.created.by.config

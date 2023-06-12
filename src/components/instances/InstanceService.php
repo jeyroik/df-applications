@@ -1,11 +1,15 @@
 <?php
 namespace deflou\components\instances;
 
+use deflou\components\applications\AppReader;
+use deflou\components\applications\AppWriter;
 use deflou\interfaces\applications\IApplication;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\instances\IInstanceInfo;
 use deflou\interfaces\instances\IInstanceService;
 use deflou\interfaces\applications\vendors\IVendor;
+use deflou\interfaces\stages\IStageInstanceCreated;
+use deflou\interfaces\stages\IStageInstanceInfoUpdated;
 use extas\components\Item;
 use extas\interfaces\repositories\IRepository;
 use Ramsey\Uuid\Uuid;
@@ -49,11 +53,6 @@ class InstanceService extends Item implements IInstanceService
 
     public function createInstanceFromApplication(IApplication $app, string $vendorName): ?IInstance
     {
-        $data = $app->__toArray();
-        $data[IInstance::FIELD__VENDOR] = [IVendor::FIELD__NAME => $vendorName];
-        unset($data[IApplication::FIELD__PACKAGE]);
-        unset($data[IApplication::FIELD__STATE]);
-
         $instance = new Instance([
             Instance::FIELD__APPLICATION_ID => $app->getId(),
             Instance::FIELD__AVATAR => $app->getAvatar(),
@@ -72,6 +71,13 @@ class InstanceService extends Item implements IInstanceService
          */
         $instance = $this->instances()->create($instance);
         $this->createInstanceInfo($app, $instance);
+
+        foreach ($this->getPluginsByStage(IStageInstanceCreated::NAME) as $plugin) {
+            /**
+             * @var IStageInstanceCreated $plugin
+             */
+            $plugin($app, $instance);
+        }
 
         return $instance;
     }
@@ -103,9 +109,16 @@ class InstanceService extends Item implements IInstanceService
         ]);
     }
 
-    public function updateInstanceInfo(IInstanceInfo $info)
+    public function updateInstanceInfo(IInstanceInfo $info): void
     {
         $this->instancesInfo()->update($info);
+
+        foreach ($this->getPluginsByStage(IStageInstanceInfoUpdated::NAME) as $plugin) {
+            /**
+             * @var IStageInstanceInfoUpdated $plugin
+             */
+            $plugin($info);
+        }
     }
 
     protected function createInstanceInfo(IApplication $app, IInstance $instance): ?IInstanceInfo

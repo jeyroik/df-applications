@@ -29,5 +29,9 @@ interface IInstanceService extends IItem
     public function getInstanceById(string $id, array $vendorNames = []): ?IInstance;
 
     public function getInstanceInfo(string $instanceId): ?IInstanceInfo;
-    public function updateInstanceInfo(IInstanceInfo $info);
+
+    /**
+     * @stage deflou.instance.info.updated
+     */
+    public function updateInstanceInfo(IInstanceInfo $info): void;
 }

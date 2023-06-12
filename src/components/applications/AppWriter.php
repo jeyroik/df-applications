@@ -8,14 +8,16 @@ use extas\components\Item;
 use extas\interfaces\IHasState;
 use extas\interfaces\repositories\IRepository;
 use deflou\components\applications\EStates;
+use deflou\components\applications\info\AppInfo;
 use deflou\interfaces\applications\IApplication;
 use deflou\interfaces\applications\IAppWriter;
-
+use deflou\interfaces\applications\info\IAppInfo;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * @method IRepository applications()
+ * @method IRepository appInfo()
  */
 class AppWriter extends Item implements IAppWriter
 {
@@ -44,6 +46,11 @@ class AppWriter extends Item implements IAppWriter
         $this->applications()->update($new);
 
         return $this->installApp($new->getId());
+    }
+
+    public function updateAppInfo(IAppInfo $appInfo): void
+    {
+        $this->appInfo()->update($appInfo);
     }
 
     public function installApp(string $id): bool
@@ -80,7 +87,12 @@ class AppWriter extends Item implements IAppWriter
         $decoded[IHasState::FIELD__STATE] = EStates::Pending->value;
         $app = new DeflouApplication($decoded);
 
-        return $saveAfterCreate ? $this->applications()->create($app) : $app;
+        if ($saveAfterCreate) {
+            $app = $this->applications()->create($app);
+            $this->createInfo($app);
+        }
+
+        return $app;
     }
 
     public function needCheckAfterInstall(): bool
@@ -93,6 +105,23 @@ class AppWriter extends Item implements IAppWriter
         $this->config[static::FIELD__INSTALL_CHECK] = $need;
 
         return $this;
+    }
+
+    protected function createInfo(IApplication $app): IAppInfo
+    {
+        $appInfo = new AppInfo([
+            AppInfo::FIELD__APPLICATION_ID => $app->getId(),
+            AppInfo::FIELD__VENDOR => $app->getVendor(),
+            AppInfo::FIELD__CREATED_AT => time(),
+            AppInfo::FIELD__INSTANCES_COUNT => 0,
+            AppInfo::FIELD__TRIGGERS_COUNT => 0,
+            AppInfo::FIELD__REQUESTS_COUNT => 0,
+            AppInfo::FIELD__EXECUTIONS_COUNT => 0,
+            AppInfo::FIELD__RATING => 0,
+            AppInfo::FIELD__LAST_EXECUTED_AT => 0
+        ]);
+
+        return $this->appInfo()->create($appInfo);
     }
 
     protected function requirePackage(string $packageName, string $composerPath): void

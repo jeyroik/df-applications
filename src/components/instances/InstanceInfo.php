@@ -1,6 +1,7 @@
 <?php
 namespace deflou\components\instances;
 
+use deflou\components\applications\info\THasInfo;
 use deflou\components\applications\THasApplication;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\instances\IInstanceInfo;
@@ -18,6 +19,48 @@ class InstanceInfo extends Item implements IInstanceInfo
     use THasStringId;
     use THasCreatedAt;
     use THasApplication;
+    use THasInfo {
+        incTriggersCount as itc;
+        incRequestsCount as irc;
+        incExecutionsCount as iec;
+        setLastExecutedAt as slea;
+    }
+
+    public function setLastExecutedAt(int $timestamp): static
+    {
+        if (!isset($this->config[static::FIELD__DELTA][static::FIELD__LAST_EXECUTED_AT])) {
+            $this->config[static::FIELD__DELTA][static::FIELD__LAST_EXECUTED_AT] = 0;
+        }
+
+        $this->config[static::FIELD__DELTA][static::FIELD__LAST_EXECUTED_AT] = $timestamp;
+
+        return $this->slea($timestamp);
+    }
+
+    public function incExecutionsCount(int $increment): static
+    {
+        return $this->incDelta(static::FIELD__EXECUTIONS_COUNT, $increment)->iec($increment);
+    }
+
+    public function incRequestsCount(int $increment): static
+    {
+        return $this->incDelta(static::FIELD__REQUESTS_COUNT, $increment)->irc($increment);
+    }
+
+    public function incTriggersCount(int $increment): static
+    {
+        return $this->incDelta(static::FIELD__TRIGGERS_COUNT, $increment)->itc($increment);
+    }
+
+    public function getDelta(): array
+    {
+        return $this->config[static::FIELD__DELTA] ?? [];
+    }
+
+    public function resetDelta(): void
+    {
+        $this->config[static::FIELD__DELTA] = [];
+    }
 
     public function getApplicationVendorName(): string
     {
@@ -37,31 +80,6 @@ class InstanceInfo extends Item implements IInstanceInfo
     public function getInstanceVendorName(): string
     {
         return $this->config[static::FIELD__INSTANCE_VENDOR_NAME] ?? '';
-    }
-
-    public function getTriggerCount(): int
-    {
-        return $this->config[static::FIELD__TRIGGERS_COUNT] ?? 0;
-    }
-
-    public function getRequestsCount(): int
-    {
-        return $this->config[static::FIELD__REQUESTS_COUNT] ?? 0;
-    }
-
-    public function getExecutionsCount(): int
-    {
-        return $this->config[static::FIELD__EXECUTIONS_COUNT] ?? 0;
-    }
-
-    public function getLastExecutedAt(): int
-    {
-        return $this->config[static::FIELD__LAST_EXECUTED_AT] ?? 0;
-    }
-
-    public function getRating(): int
-    {
-        return $this->config[static::FIELD__RATING] ?? 0;
     }
 
     public function setApplicationVendorName(string $name): IInstanceInfo
@@ -85,59 +103,15 @@ class InstanceInfo extends Item implements IInstanceInfo
         return $this;
     }
 
-    public function setTriggerCount(int $count): IInstanceInfo
+    protected function incDelta(string $field, int $increment): static
     {
-        $this->config[static::FIELD__TRIGGERS_COUNT] = $count;
+        if (!isset($this->config[static::FIELD__DELTA][$field])) {
+            $this->config[static::FIELD__DELTA][$field] = 0;
+        }
+
+        $this->config[static::FIELD__DELTA][$field] += $increment;
 
         return $this;
-    }
-
-    public function incTriggerCount(int $increment): IInstanceInfo
-    {
-        return $this->setTriggerCount($this->getTriggerCount()+$increment);
-    }
-
-    public function setRequestsCount(int $count): IInstanceInfo
-    {
-        $this->config[static::FIELD__REQUESTS_COUNT] = $count;
-
-        return $this;
-    }
-
-    public function incRequestsCount(int $increment): IInstanceInfo
-    {
-        return $this->setRequestsCount($this->getRequestsCount()+$increment);
-    }
-
-    public function setExecutionsCount(int $count): IInstanceInfo
-    {
-        $this->config[static::FIELD__EXECUTIONS_COUNT] = $count;
-
-        return $this;
-    }
-
-    public function incExecutionsCount(int $increment): IInstanceInfo
-    {
-        return $this->setExecutionsCount($this->getExecutionsCount()+$increment);
-    }
-
-    public function setLastExecutedAt(int $timestamp): IInstanceInfo
-    {
-        $this->config[static::FIELD__LAST_EXECUTED_AT] = $timestamp;
-
-        return $this;
-    }
-
-    public function setRating(int $rating): IInstanceInfo
-    {
-        $this->config[static::FIELD__RATING] = $rating;
-
-        return $this;
-    }
-
-    public function incRating(int $increment): IInstanceInfo
-    {
-        return $this->setRating($this->getRating()+$increment);
     }
 
     protected function getSubjectForExtension(): string

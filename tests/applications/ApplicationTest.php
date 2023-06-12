@@ -46,6 +46,7 @@ class ApplicationTest extends TestCase
         $this->deleteRepo('plugins');
         $this->deleteRepo('extensions');
         $this->deleteRepo('applications');
+        $this->deleteRepo('applications_info');
 
         $finder = new Finder();
         $finder->name('composer.*');
@@ -59,7 +60,7 @@ class ApplicationTest extends TestCase
         }
     }
 
-    public function testApplicationPackageBasics()
+    protected function buildAppRepos()
     {
         $this->buildRepo(__DIR__ . '/../../vendor/jeyroik/extas-foundation/resources/', [
             'applications' => [
@@ -74,6 +75,25 @@ class ApplicationTest extends TestCase
                 ]
             ]
         ]);
+
+        $this->buildRepo(__DIR__ . '/../../vendor/jeyroik/extas-foundation/resources/', [
+            'applications_info' => [
+                "namespace" => "tests\\tmp",
+                "item_class" => "deflou\\components\\applications\\info\\AppInfo",
+                "pk" => "id",
+                "aliases" => ["applications_inof", "appInfo"],
+                "hooks" => [],
+                "code" => [
+                    'create-before' => '\\' . RepoItem::class . '::setId($item);'
+                                    .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'aid\']);'
+                ]
+            ]
+        ]);
+    }
+
+    public function testApplicationPackageBasics()
+    {
+        $this->buildAppRepos();
 
         $reader = new AppReader([
             AppReader::FIELD__INSTALL_PATH => static::PATH__INSTALL
@@ -185,6 +205,16 @@ class ApplicationTest extends TestCase
         $this->assertTrue($writer->changeAppStateTo(EStates::Declined, $app->getId()));
         $app = $reader->getAppById($app->getId());
         $this->assertEquals(EStates::Declined->value, $app->getState());
+
+        $info = $reader->getAppInfo($app->getId());
+        $this->assertNotNull($info);
+        $this->assertEquals(0, $info->getInstancesCount());
+        $info->incInstancesCount(1);
+        $this->assertEquals(1, $info->getInstancesCount());
+        
+        $writer->updateAppInfo($info);
+        $info = $reader->getAppInfo($app->getId());
+        $this->assertEquals(1, $info->getInstancesCount());
     }
 
     protected function getAppJsonDecoded(): array
