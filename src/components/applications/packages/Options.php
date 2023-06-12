@@ -23,11 +23,6 @@ class Options extends Item implements IOptions
         return new Option($this->getItem($name));
     }
 
-    public function getResolver(): string
-    {
-        return $this->config[static::FIELD__RESOLVER] ?? '';   
-    }
-
     protected function getSubjectForExtension(): string
     {
         return static::SUBJECT;

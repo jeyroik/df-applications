@@ -1,3 +1,8 @@
+# 0.3.0
+
+- Added `getResolver()` method to a `IApplicationPackage` and `IINstance`.
+- Removed `getResolver()` from `IOptions`.
+
 # 0.2.1
 
 - Added config for instances for extas.

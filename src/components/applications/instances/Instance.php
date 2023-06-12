@@ -5,6 +5,7 @@ use deflou\components\applications\packages\avatars\THasAvatar;
 use deflou\components\applications\packages\events\THasEvents;
 use deflou\components\applications\packages\operations\THasOperations;
 use deflou\components\applications\packages\options\THasOptions;
+use deflou\components\applications\packages\THasResolver;
 use deflou\components\applications\packages\vendors\THasVendor;
 use deflou\components\applications\THasApplication;
 use deflou\interfaces\applications\instances\IInstance;
@@ -30,6 +31,7 @@ class Instance extends Item implements IInstance
     use THasType;
     use THasApplication;
     use THasVersion;
+    use THasResolver;
 
     protected function getSubjectForExtension(): string
     {

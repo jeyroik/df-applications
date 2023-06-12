@@ -92,8 +92,8 @@ class ApplicationPackageTest extends TestCase
 
         $options = $package->buildOptions();
         $this->assertInstanceOf(IOptions::class, $options);
-        $this->assertEquals($etalon[IApplicationPackage::FIELD__OPTIONS]['resolver'], $options->getResolver());
-        $this->assertEquals($etalon[IApplicationPackage::FIELD__OPTIONS]['instructions'], $options->getItem('instructions'));
+        $this->assertEquals($etalon[IApplicationPackage::FIELD__RESOLVER], $package->getResolver());
+        $this->assertEquals($etalon[IApplicationPackage::FIELD__OPTIONS]['login'], $options->getItem('login'));
 
         $option = $options->buildItem('login');
         $this->assertInstanceOf(IOption::class, $option);
