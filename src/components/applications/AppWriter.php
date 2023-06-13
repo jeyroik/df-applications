@@ -67,7 +67,6 @@ class AppWriter extends Item implements IAppWriter
                 require($composerPath . '/vendor/autoload.php');
             }
             
-            file_put_contents('/tmp/df.log', date('[Y-m-d H:i:s] ').$output->fetch()."\n", FILE_APPEND);
             $resolver = $app->getResolver();
             $installed = class_exists($resolver);
 
