@@ -4,6 +4,7 @@ namespace deflou\components\instances;
 use deflou\components\applications\AppReader;
 use deflou\components\applications\AppWriter;
 use deflou\interfaces\applications\IApplication;
+use deflou\interfaces\applications\options\IOption;
 use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\instances\IInstanceInfo;
 use deflou\interfaces\instances\IInstanceService;
@@ -119,6 +120,28 @@ class InstanceService extends Item implements IInstanceService
              */
             $plugin($info);
         }
+    }
+
+    public function updateInstance(IInstance &$instance, array $data, array $options): bool
+    {
+        foreach ($data as $name => $value) {
+            if (isset($instance[$name])) {
+                $instance[$name] = $value;
+            }
+        }
+
+        $srcOptions = $instance->getOptions();
+        foreach ($options as $name => $value) {
+            if (isset($srcOptions[$name])) {
+                $srcOptions[$name][IOption::FIELD__VALUE] = $value;
+            }
+        }
+
+        $instance[IInstance::FIELD__OPTIONS] = $srcOptions;
+
+        $updated = $this->instances()->update($instance);
+
+        return $updated ? true : false;
     }
 
     protected function createInstanceInfo(IApplication $app, IInstance $instance): ?IInstanceInfo
