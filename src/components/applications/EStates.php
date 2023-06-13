@@ -1,9 +1,14 @@
 <?php
 namespace deflou\components\applications;
 
+use extas\components\extensions\TExtendable;
+
 enum EStates: string
 {
     public const LANG__RUSSIAN = 'ru';
+    public const SUBJECT = 'deflou.application.state';
+
+    use TExtendable;
 
     case Pending = 'pending';
     case Accepted = 'accepted';
@@ -22,7 +27,7 @@ enum EStates: string
 
         //todo get from cfg
         $langs = [
-            'ru' => [
+            static::LANG__RUSSIAN => [
                 'pending' => 'На модерации',
                 'accepted' => 'Принято',
                 'published' => 'Опубликовано',
@@ -32,5 +37,10 @@ enum EStates: string
         ];
 
         return isset($langs[$lang], $langs[$lang][$state]) ? $langs[$lang][$state] : $state;
+    }
+
+    protected function getSubjectForExtension(): string
+    {
+        return static::SUBJECT;
     }
 }

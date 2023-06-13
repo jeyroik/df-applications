@@ -34,4 +34,6 @@ interface IInstanceService extends IItem
      * @stage deflou.instance.info.updated
      */
     public function updateInstanceInfo(IInstanceInfo $info): void;
+
+    public function updateInstance(IInstance &$instance, array $data, array $options): bool;
 }

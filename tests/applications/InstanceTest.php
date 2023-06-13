@@ -2,17 +2,22 @@
 
 use deflou\components\applications\AppReader;
 use deflou\components\applications\AppWriter;
+use deflou\components\applications\EStates;
 use deflou\components\instances\InstanceService;
 use deflou\components\plugins\applications\PluginUpdateAppInfoDelta;
 use deflou\components\plugins\applications\PluginUpdateAppInfoInstances;
+use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\stages\IStageInstanceCreated;
 use deflou\interfaces\stages\IStageInstanceInfoUpdated;
+use extas\components\extensions\Extension;
 use extas\components\plugins\Plugin;
 use extas\components\repositories\RepoItem;
 use extas\components\repositories\TSnuffRepository;
 use \PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use tests\resources\ExtensionStateTest;
+use tests\resources\IExtensionStateTest;
 
 /**
  * Class InstanceTest
@@ -123,7 +128,18 @@ class InstanceTest extends TestCase
             Plugin::FIELD__CLASS => PluginUpdateAppInfoDelta::class,
             Plugin::FIELD__STAGE => IStageInstanceInfoUpdated::NAME
         ]));
+        $writer->extensions()->create(new Extension([
+            Extension::FIELD__CLASS => ExtensionStateTest::class,
+            Extension::FIELD__SUBJECT => EStates::SUBJECT,
+            Extension::FIELD__INTERFACE => IExtensionStateTest::class,
+            Extension::FIELD__METHODS => ['test']
+        ]));
         $app = $writer->createAppByConfigPath(static::PATH__SERVICE_JSON);
+        /**
+         * @var IExtensionStateTest $state
+         */
+        $state = EStates::from($app->getState());
+        $this->assertTrue($state->test());
         $reader = new AppReader();
         $appInfo = $reader->getAppInfo($app->getId());
         $this->assertNotNull($appInfo);
@@ -161,6 +177,11 @@ class InstanceTest extends TestCase
         $instanceService->updateInstanceInfo($info);
         $appInfo = $reader->getAppInfo($app->getId());
         $this->assertEquals(1, $appInfo->getTriggersCount());
+
+        $updated = $instanceService->updateInstance($instance, [IInstance::FIELD__TITLE => 'updated title'], ['login' => 'updated login']);
+        $this->assertTrue($updated);
+        $this->assertEquals('updated title', $instance->getTitle());
+        $this->assertEquals('updated login', $instance->buildOptions()->buildItem('login')->getValue());
 
         $info->setApplicationId('id1')->setApplicationVendorName('vendor1')->setInstanceId('id2')->setInstanceVendorName('vendor2');
 

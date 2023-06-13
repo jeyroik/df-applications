@@ -20,9 +20,9 @@
       },
       "password": {
         "type": "string",
-        "name": "login",
-        "title": "Login",
-        "description": "Login",
+        "name": "password",
+        "title": "Password",
+        "description": "Password",
         "default": "nothing",
         "required": true,
         "encode": false,
