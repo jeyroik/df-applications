@@ -1,3 +1,7 @@
+# 1.2.1
+
+- Rm unused code.
+
 # 1.2.0
 
 - Added `IAppInfo`.
