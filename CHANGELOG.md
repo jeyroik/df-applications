@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+# 1.3.1
+
+- Fixed `after one` code for inctances info.
+
 # 1.3.0
 
 - Added `TExtendable` to `EStates`.

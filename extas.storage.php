@@ -47,7 +47,7 @@ return [
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'
                                   .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'iid\']);',
-                'one-after' => '$result->resetDelta();',
+                'one-after' => 'if ($result) { $result->resetDelta(); }',
                 'all-after' => 'foreach ($result as $index => $item) { $item->resetDelta(); $result[$index] = $item; }'
             ]
         ],
