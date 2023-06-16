@@ -1,6 +1,12 @@
-# 1.2.2
+<<<<<<< HEAD
+# 1.3.1
 
 - Fixed `after one` code for inctances info.
+
+# 1.3.0
+
+- Added `TExtendable` to `EStates`.
+- Added method `IInstanceService::updateInstance(IInstance $instance, array $data, array $options): bool`.
 
 # 1.2.1
 
