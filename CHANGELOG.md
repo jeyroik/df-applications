@@ -1,3 +1,7 @@
+# 1.2.2
+
+- Fixed `after one` code for inctances info.
+
 # 1.2.1
 
 - Rm unused code.
