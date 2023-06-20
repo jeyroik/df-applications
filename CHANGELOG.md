@@ -1,4 +1,7 @@
-<<<<<<< HEAD
+# 1.4.0
+
+- Added `IHaveInstance` and `THasInstance`.
+
 # 1.3.1
 
 - Fixed `after one` code for inctances info.

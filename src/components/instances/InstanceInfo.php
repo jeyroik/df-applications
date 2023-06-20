@@ -3,7 +3,6 @@ namespace deflou\components\instances;
 
 use deflou\components\applications\info\THasInfo;
 use deflou\components\applications\THasApplication;
-use deflou\interfaces\instances\IInstance;
 use deflou\interfaces\instances\IInstanceInfo;
 use extas\components\Item;
 use extas\components\THasCreatedAt;
@@ -19,6 +18,7 @@ class InstanceInfo extends Item implements IInstanceInfo
     use THasStringId;
     use THasCreatedAt;
     use THasApplication;
+    use THasInstance;
     use THasInfo {
         incTriggersCount as itc;
         incRequestsCount as irc;
@@ -67,16 +67,6 @@ class InstanceInfo extends Item implements IInstanceInfo
         return $this->config[static::FIELD__APPLICATION_VENDOR_NAME] ?? '';
     }
 
-    public function getInstanceId(): string
-    {
-        return $this->config[static::FIELD__INSTANCE_ID] ?? '';
-    }
-
-    public function getInstance(): ?IInstance
-    {
-        return $this->instances()->one([IInstance::FIELD__ID => $this->getInstanceId()]);
-    }
-
     public function getInstanceVendorName(): string
     {
         return $this->config[static::FIELD__INSTANCE_VENDOR_NAME] ?? '';
@@ -85,13 +75,6 @@ class InstanceInfo extends Item implements IInstanceInfo
     public function setApplicationVendorName(string $name): IInstanceInfo
     {
         $this->config[static::FIELD__APPLICATION_VENDOR_NAME] = $name;
-
-        return $this;
-    }
-
-    public function setInstanceId(string $id): IInstanceInfo
-    {
-        $this->config[static::FIELD__INSTANCE_ID] = $id;
 
         return $this;
     }
