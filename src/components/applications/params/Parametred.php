@@ -1,17 +1,16 @@
 <?php
-namespace deflou\components\applications\operations;
+namespace deflou\components\applications\params;
 
+use deflou\interfaces\applications\params\IParametred;
 use extas\components\Item;
 use extas\components\THasDescription;
 use extas\components\THasName;
-use deflou\components\applications\params\THasValue;
-use deflou\interfaces\applications\operations\IOperationParam;
 
-class OperationParam extends Item implements IOperationParam
+class Parametred extends Item implements IParametred
 {
     use THasName;
     use THasDescription;
-    use THasValue;
+    use THasParams;
 
     protected function getSubjectForExtension(): string
     {

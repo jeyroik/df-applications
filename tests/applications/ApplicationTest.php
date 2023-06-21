@@ -13,6 +13,10 @@ use deflou\interfaces\applications\operations\IOperation;
 use deflou\interfaces\applications\operations\IOperations;
 use deflou\interfaces\applications\options\IOption;
 use deflou\interfaces\applications\options\IOptions;
+use deflou\interfaces\applications\params\IParam;
+use deflou\interfaces\applications\params\IParametred;
+use deflou\interfaces\applications\params\IParametredCollection;
+use deflou\interfaces\applications\params\IParams;
 use deflou\interfaces\applications\vendors\IVendor;
 use deflou\interfaces\applications\params\IParamValue;
 use extas\components\repositories\RepoItem;
@@ -132,46 +136,35 @@ class ApplicationTest extends TestCase
         $this->assertEquals($etalon[IApplication::FIELD__OPTIONS]['login']['hashing'], $option->isNeedToHash());
 
         $events = $app->buildEvents();
-        $this->assertInstanceOf(IEvents::class, $events);
+        $this->assertInstanceOf(IParametredCollection::class, $events);
         $this->assertEquals($etalon[IApplication::FIELD__EVENTS]['nothing_event'], $events->getItem('nothing_event'));
 
         $event = $events->buildItem('nothing_event');
-        $this->assertInstanceOf(IEvent::class, $event);
+        $this->assertInstanceOf(IParametred::class, $event);
         $this->assertEquals($etalon[IApplication::FIELD__EVENTS]['nothing_event']['params'], $event->getParams());
 
         $params = $event->buildParams();
-        $this->assertInstanceOf(IEventParams::class, $params);
+        $this->assertInstanceOf(IParams::class, $params);
         $this->assertEquals(
             $etalon[IApplication::FIELD__EVENTS]['nothing_event']['params']['param1'], 
             $params->getItem('param1')
         );
 
         $param = $params->buildItem('param1');
-        $this->assertInstanceOf(IEventParam::class, $param);
-        $this->assertEquals(
-            $etalon[IApplication::FIELD__EVENTS]['nothing_event']['params']['param1']['compares'], 
-            $param->getCompares()
-        );
-        $this->assertEquals(
-            $etalon[IApplication::FIELD__EVENTS]['nothing_event']['params']['param1']['value'], 
-            $param->getValue()
-        );
-
-        $value = $param->buildValue();
-        $this->assertInstanceOf(IParamValue::class, $value);
+        $this->assertInstanceOf(IParam::class, $param);
 
         $params = $params->buildItems();
 
         foreach ($params as $param) {
-            $this->assertInstanceOf(IEventParam::class, $param);
+            $this->assertInstanceOf(IParam::class, $param);
         }
 
         $ops = $app->buildOperations();
-        $this->assertInstanceOf(IOperations::class, $ops);
+        $this->assertInstanceOf(IParametredCollection::class, $ops);
         $this->assertEquals($etalon[IApplication::FIELD__OPERATIONS]['nothing_op'], $ops->getItem('nothing_op'));
 
         $op = $ops->buildItem('nothing_op');
-        $this->assertInstanceOf(IOperation::class, $op);
+        $this->assertInstanceOf(IParametred::class, $op);
         $this->assertEquals($etalon[IApplication::FIELD__OPERATIONS]['nothing_op']['params'], $op->getParams());
 
         $vendor = $app->buildVendor();

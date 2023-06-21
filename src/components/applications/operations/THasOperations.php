@@ -1,8 +1,9 @@
 <?php
 namespace deflou\components\applications\operations;
 
-use deflou\interfaces\applications\operations\IOperations;
+use deflou\components\applications\params\ParametredCollection;
 use deflou\interfaces\applications\operations\IHaveOperations;
+use deflou\interfaces\applications\params\IParametredCollection;
 
 /**
  * @property array $config
@@ -14,8 +15,8 @@ trait THasOperations
         return $this->config[IHaveOperations::FIELD__OPERATIONS] ?? '';
     }
 
-    public function buildOperations(): IOperations
+    public function buildOperations(): IParametredCollection
     {
-        return new Operations($this->getOperations());
+        return new ParametredCollection($this->getOperations());
     }
 }
