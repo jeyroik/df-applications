@@ -7,7 +7,7 @@ use extas\interfaces\IHasCreatedAt;
 use extas\interfaces\IHaveUUID;
 use extas\interfaces\IItem;
 
-interface IInstanceInfo extends IItem, IHasCreatedAt, IHaveUUID, IHaveApplication, IHaveInfo
+interface IInstanceInfo extends IItem, IHasCreatedAt, IHaveUUID, IHaveApplication, IHaveInfo, IHaveInstance
 {
     public const SUBJECT = 'df.instance.info';
 
@@ -17,8 +17,6 @@ interface IInstanceInfo extends IItem, IHasCreatedAt, IHaveUUID, IHaveApplicatio
     public const FIELD__DELTA = 'delta';
 
     public function getApplicationVendorName(): string;
-    public function getInstanceId(): string;
-    public function getInstance(): ?IInstance;
     public function getInstanceVendorName(): string;
 
     public function resetDelta(): void;

@@ -37,15 +37,7 @@
         "params": {
           "param1": {
             "name": "param1",
-            "title": "Useless parameter",
-            "compares" : { "eq" : "default", "neq" : "default", "like" : "default" },
-            "value": {
-              "type": "select",
-              "value": {
-                "n1": "Really nothing",
-                "n2": "Actually nothing"
-              }
-            }
+            "title": "Useless parameter"
           }
         }
       }
@@ -58,11 +50,7 @@
         "params": {
           "param1": {
             "name": "param1",
-            "title": "Useless parameter",
-            "value": {
-              "type": "text",
-              "value": "nothing"
-            }
+            "title": "Useless parameter"
           }
         }
       }

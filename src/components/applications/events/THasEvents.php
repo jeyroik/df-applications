@@ -1,8 +1,9 @@
 <?php
 namespace deflou\components\applications\events;
 
+use deflou\components\applications\params\ParametredCollection;
 use deflou\interfaces\applications\events\IHaveEvents;
-use deflou\interfaces\applications\events\IEvents;
+use deflou\interfaces\applications\params\IParametredCollection;
 
 /**
  * @property array $config
@@ -14,8 +15,8 @@ trait THasEvents
         return $this->config[IHaveEvents::FIELD__EVENTS] ?? '';
     }
 
-    public function buildEvents(): IEvents
+    public function buildEvents(): IParametredCollection
     {
-        return new Events($this->getEvents());
+        return new ParametredCollection($this->getEvents());
     }
 }
