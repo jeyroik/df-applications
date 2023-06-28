@@ -1,9 +1,9 @@
 <?php
 namespace deflou\components\applications\operations;
 
-use deflou\components\applications\params\ParametredCollection;
 use deflou\interfaces\applications\operations\IHaveOperations;
-use deflou\interfaces\applications\params\IParametredCollection;
+use extas\components\parameters\ParametredCollection;
+use extas\interfaces\parameters\IParametredCollection;
 
 /**
  * @property array $config

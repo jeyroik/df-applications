@@ -1,3 +1,11 @@
+# 3.0.0
+
+- Changed native `params`-interfaces and classes with `extas-foundation` implementation.
+
+# 2.0.0
+
+- Replaced events and operations entities with `IParametred`.
+
 # 1.4.0
 
 - Added `IHaveInstance` and `THasInstance`.

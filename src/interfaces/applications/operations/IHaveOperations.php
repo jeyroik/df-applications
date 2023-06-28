@@ -1,7 +1,7 @@
 <?php
 namespace deflou\interfaces\applications\operations;
 
-use deflou\interfaces\applications\params\IParametredCollection;
+use extas\interfaces\parameters\IParametredCollection;
 
 interface IHaveOperations
 {

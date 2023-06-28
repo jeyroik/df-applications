@@ -1,9 +1,9 @@
 <?php
 namespace deflou\components\applications\events;
 
-use deflou\components\applications\params\ParametredCollection;
 use deflou\interfaces\applications\events\IHaveEvents;
-use deflou\interfaces\applications\params\IParametredCollection;
+use extas\components\parameters\ParametredCollection;
+use extas\interfaces\parameters\IParametredCollection;
 
 /**
  * @property array $config

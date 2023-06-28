@@ -4,23 +4,16 @@ use deflou\components\applications\AppReader;
 use deflou\components\applications\AppWriter;
 use deflou\components\applications\EStates;
 use deflou\components\applications\options\ETypes;
-use deflou\interfaces\applications\events\IEventParam;
-use deflou\interfaces\applications\events\IEventParams;
-use deflou\interfaces\applications\events\IEvent;
-use deflou\interfaces\applications\events\IEvents;
 use deflou\interfaces\applications\IApplication;
-use deflou\interfaces\applications\operations\IOperation;
-use deflou\interfaces\applications\operations\IOperations;
 use deflou\interfaces\applications\options\IOption;
 use deflou\interfaces\applications\options\IOptions;
-use deflou\interfaces\applications\params\IParam;
-use deflou\interfaces\applications\params\IParametred;
-use deflou\interfaces\applications\params\IParametredCollection;
-use deflou\interfaces\applications\params\IParams;
 use deflou\interfaces\applications\vendors\IVendor;
-use deflou\interfaces\applications\params\IParamValue;
 use extas\components\repositories\RepoItem;
 use extas\components\repositories\TSnuffRepository;
+use extas\interfaces\parameters\IParam;
+use extas\interfaces\parameters\IParametred;
+use extas\interfaces\parameters\IParametredCollection;
+use extas\interfaces\parameters\IParams;
 use \PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -123,9 +116,9 @@ class ApplicationTest extends TestCase
         $options = $app->buildOptions();
         $this->assertInstanceOf(IOptions::class, $options);
         $this->assertEquals($etalon[IApplication::FIELD__RESOLVER], $app->getResolver());
-        $this->assertEquals($etalon[IApplication::FIELD__OPTIONS]['login'], $options->getItem('login'));
+        $this->assertEquals($etalon[IApplication::FIELD__OPTIONS]['login'], $options->getOne('login'));
 
-        $option = $options->buildItem('login');
+        $option = $options->buildOne('login');
         $this->assertInstanceOf(IOption::class, $option);
         $this->assertEquals($etalon[IApplication::FIELD__OPTIONS]['login']['default'], $option->getDefault());
         $this->assertEquals($etalon[IApplication::FIELD__OPTIONS]['login']['required'], $option->getRequired());
@@ -137,9 +130,9 @@ class ApplicationTest extends TestCase
 
         $events = $app->buildEvents();
         $this->assertInstanceOf(IParametredCollection::class, $events);
-        $this->assertEquals($etalon[IApplication::FIELD__EVENTS]['nothing_event'], $events->getItem('nothing_event'));
+        $this->assertEquals($etalon[IApplication::FIELD__EVENTS]['nothing_event'], $events->getOne('nothing_event'));
 
-        $event = $events->buildItem('nothing_event');
+        $event = $events->buildOne('nothing_event');
         $this->assertInstanceOf(IParametred::class, $event);
         $this->assertEquals($etalon[IApplication::FIELD__EVENTS]['nothing_event']['params'], $event->getParams());
 
@@ -147,13 +140,13 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(IParams::class, $params);
         $this->assertEquals(
             $etalon[IApplication::FIELD__EVENTS]['nothing_event']['params']['param1'], 
-            $params->getItem('param1')
+            $params->getOne('param1')
         );
 
-        $param = $params->buildItem('param1');
+        $param = $params->buildOne('param1');
         $this->assertInstanceOf(IParam::class, $param);
 
-        $params = $params->buildItems();
+        $params = $params->buildAll();
 
         foreach ($params as $param) {
             $this->assertInstanceOf(IParam::class, $param);
@@ -161,11 +154,7 @@ class ApplicationTest extends TestCase
 
         $ops = $app->buildOperations();
         $this->assertInstanceOf(IParametredCollection::class, $ops);
-        $this->assertEquals($etalon[IApplication::FIELD__OPERATIONS]['nothing_op'], $ops->getItem('nothing_op'));
-
-        $op = $ops->buildItem('nothing_op');
-        $this->assertInstanceOf(IParametred::class, $op);
-        $this->assertEquals($etalon[IApplication::FIELD__OPERATIONS]['nothing_op']['params'], $op->getParams());
+        $this->assertEquals($etalon[IApplication::FIELD__OPERATIONS]['nothing_op'], $ops->getOne('nothing_op'));
 
         $vendor = $app->buildVendor();
         $this->assertInstanceOf(IVendor::class, $vendor);
