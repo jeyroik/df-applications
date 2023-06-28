@@ -1,11 +1,12 @@
 <?php
 namespace deflou\components\applications\options;
 
-use deflou\components\applications\items\TBuildItems;
-use deflou\components\applications\items\THasItem;
+
 use extas\components\Item;
 use deflou\interfaces\applications\options\IOption;
 use deflou\interfaces\applications\options\IOptions;
+use extas\components\collections\TBuildAll;
+use extas\components\collections\TCollection;
 
 /**
  * "options": {
@@ -17,12 +18,14 @@ use deflou\interfaces\applications\options\IOptions;
  */
 class Options extends Item implements IOptions
 {
-    use THasItem;
-    use TBuildItems;
+    use TCollection;
+    use TBuildAll;
 
-    public function buildItem(string $name): IOption
+    public function buildOne(string $name, bool $errorIfMissed = false): IOption
     {
-        return new Option($this->getItem($name));
+        $this->hasOne($name, $errorIfMissed);
+        
+        return new Option($this->getOne($name));
     }
 
     protected function getSubjectForExtension(): string

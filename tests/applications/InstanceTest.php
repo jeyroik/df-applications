@@ -181,7 +181,7 @@ class InstanceTest extends TestCase
         $updated = $instanceService->updateInstance($instance, [IInstance::FIELD__TITLE => 'updated title'], ['login' => 'updated login']);
         $this->assertTrue($updated);
         $this->assertEquals('updated title', $instance->getTitle());
-        $this->assertEquals('updated login', $instance->buildOptions()->buildItem('login')->getValue());
+        $this->assertEquals('updated login', $instance->buildOptions()->buildOne('login')->getValue());
 
         $info->setApplicationId('id1')->setApplicationVendorName('vendor1')->setInstanceId('id2')->setInstanceVendorName('vendor2');
 

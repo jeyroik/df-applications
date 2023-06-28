@@ -1,7 +1,7 @@
 <?php
 namespace deflou\interfaces\applications\events;
 
-use deflou\interfaces\applications\params\IParametredCollection;
+use extas\interfaces\parameters\IParametredCollection;
 
 interface IHaveEvents
 {
