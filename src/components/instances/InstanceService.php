@@ -64,7 +64,7 @@ class InstanceService extends Item implements IInstanceService
             Instance::FIELD__EVENTS => $app->getEvents(),
             Instance::FIELD__OPERATIONS => $app->getOperations(),
             Instance::FIELD__VENDOR => [IVendor::FIELD__NAME => $vendorName],
-            Instance::FIELD__CLASS => $app->getResolver()
+            Instance::FIELD__RESOLVER => $app->getResolver()
         ]);
 
         /**

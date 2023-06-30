@@ -1,3 +1,7 @@
+# 4.0.0
+
+- Removed `IHasClass` from `IInstance`, cause it is duplicating `IHaveResolver` aims.
+
 # 3.0.0
 
 - Changed native `params`-interfaces and classes with `extas-foundation` implementation.
