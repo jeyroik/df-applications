@@ -147,7 +147,7 @@ class InstanceTest extends TestCase
         $instanceService = new InstanceService();
         $instance = $instanceService->createInstanceFromApplication($app, 'jeyroik2');
         $this->assertNotNull($instance);
-        $this->assertEquals($app->getResolver(), $instance->getClass());
+        $this->assertEquals($app->getResolver(), $instance->getResolver());
 
         $info = $instanceService->getInstanceInfo($instance->getId());
         $this->assertNotNull($info);

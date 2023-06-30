@@ -1,12 +1,10 @@
 {
-  "name": "jeyroik/df-applications",
-  "description": "DF applications",
+  "name": "jeyroik/df-anchors",
+  "description": "Anchors mechanizm for DF",
   "require": {
     "jeyroik/extas-id": "0.*",
     "jeyroik/extas-exceptions": "0.*",
     "jeyroik/extas-foundation": "6.*",
-    "jeyroik/extas-base": "2.*",
-    
     "composer/composer": "2.5.*"
   },
   "require-dev": {
