@@ -1,3 +1,7 @@
+# 4.0.1
+
+- Added instance version on creating by app.
+
 # 4.0.0
 
 - Removed `IHasClass` from `IInstance`, cause it is duplicating `IHaveResolver` aims.
