@@ -1,3 +1,7 @@
+# 4.1.0
+
+- Added `IHaveApplicationName`, `THasApplicationName`.
+
 # 4.0.1
 
 - Added instance version on creating by app.

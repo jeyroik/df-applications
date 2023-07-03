@@ -4,46 +4,43 @@ use deflou\components\applications\AppReader;
 use deflou\components\applications\AppWriter;
 use deflou\components\applications\EStates;
 use deflou\components\applications\options\ETypes;
+use deflou\components\applications\THasApplicationName;
 use deflou\interfaces\applications\IApplication;
+use deflou\interfaces\applications\IHaveApplicationName;
 use deflou\interfaces\applications\options\IOption;
 use deflou\interfaces\applications\options\IOptions;
 use deflou\interfaces\applications\vendors\IVendor;
-use extas\components\repositories\RepoItem;
-use extas\components\repositories\TSnuffRepository;
+use extas\components\Item;
 use extas\interfaces\parameters\IParam;
 use extas\interfaces\parameters\IParametred;
 use extas\interfaces\parameters\IParametredCollection;
 use extas\interfaces\parameters\IParams;
-use \PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use tests\ExtasTestCase;
 
 /**
  * Class ApplicationPackageTest
  * @author jeyroik <jeyroik@gmail.com>
  */
-class ApplicationTest extends TestCase
+class ApplicationTest extends ExtasTestCase
 {
-    use TSnuffRepository;
-
     public const PATH__SERVICE_JSON = __DIR__ . '/../resources/service.json';
     public const PATH__SERVICE_JSON_2 = __DIR__ . '/../resources/service.2.json';
     public const PATH__INSTALL = __DIR__ . '/../tmp';
+
     protected array $serviceConfig = [];
 
-    protected function setUp(): void
-    {
-        putenv("EXTAS__CONTAINER_PATH_STORAGE_LOCK=vendor/jeyroik/extas-foundation/resources/container.dist.json");
-        $this->buildBasicRepos();
-    }
+    protected array $libsToInstall = [
+        '' => ['php', 'json']
+        //'vendor/lib' => ['php', 'json'] storage ext, extas ext
+    ];
+    protected bool $isNeedInstallLibsItems = true;
+    protected string $testPath = __DIR__;
 
     protected function tearDown(): void
     {
-        $this->dropDatabase(__DIR__);
-        $this->deleteRepo('plugins');
-        $this->deleteRepo('extensions');
-        $this->deleteRepo('applications');
-        $this->deleteRepo('applications_info');
+        parent::tearDown();
 
         $finder = new Finder();
         $finder->name('composer.*');
@@ -57,41 +54,8 @@ class ApplicationTest extends TestCase
         }
     }
 
-    protected function buildAppRepos()
-    {
-        $this->buildRepo(__DIR__ . '/../../vendor/jeyroik/extas-foundation/resources/', [
-            'applications' => [
-                "namespace" => "tests\\tmp",
-                "item_class" => "deflou\\components\\applications\\Application",
-                "pk" => "name",
-                "aliases" => ["applications", "apps"],
-                "hooks" => [],
-                "code" => [
-                    'create-before' => '\\' . RepoItem::class . '::setId($item);'
-                                    .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'name\']);'
-                ]
-            ]
-        ]);
-
-        $this->buildRepo(__DIR__ . '/../../vendor/jeyroik/extas-foundation/resources/', [
-            'applications_info' => [
-                "namespace" => "tests\\tmp",
-                "item_class" => "deflou\\components\\applications\\info\\AppInfo",
-                "pk" => "id",
-                "aliases" => ["applications_inof", "appInfo"],
-                "hooks" => [],
-                "code" => [
-                    'create-before' => '\\' . RepoItem::class . '::setId($item);'
-                                    .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'aid\']);'
-                ]
-            ]
-        ]);
-    }
-
     public function testApplicationPackageBasics()
     {
-        $this->buildAppRepos();
-
         $reader = new AppReader([
             AppReader::FIELD__INSTALL_PATH => static::PATH__INSTALL
         ]);
@@ -187,6 +151,18 @@ class ApplicationTest extends TestCase
         $this->assertTrue($writer->changeAppStateTo(EStates::Declined, $app->getId()));
         $app = $reader->getAppById($app->getId());
         $this->assertEquals(EStates::Declined->value, $app->getState());
+
+        $tmp = new class extends Item implements IHaveApplicationName {
+            use THasApplicationName;
+            protected function getSubjectForExtension(): string
+            {
+                return '';
+            }
+        };
+
+        $tmp->setApplicationName($app->getName());
+        $this->assertEquals($app->getName(), $tmp->getApplicationName());
+        $this->assertEquals($app->getId(), $tmp->getApplication()->getId());
 
         $info = $reader->getAppInfo($app->getId());
         $this->assertNotNull($info);
