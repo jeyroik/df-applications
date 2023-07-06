@@ -1,3 +1,7 @@
+# 4.2.0
+
+- Added `IInstanceService::updateInstanceVersion(string $instanceId): bool`.
+
 # 4.1.0
 
 - Added `IHaveApplicationName`, `THasApplicationName`.

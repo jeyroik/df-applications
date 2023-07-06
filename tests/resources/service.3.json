@@ -1,0 +1,66 @@
+{
+    "package": "jeyroik/df-test-service:0.*",
+    "version": "3.0.0",
+    "name": "test-service",
+    "title": "Nothing",
+    "description": "Nothing service with nothing event and action",
+    "type": "public",
+    "avatar": "https://img.funcraft.ru/edu.png",
+    "resolver": "deflou\\components\\applications\\Application",
+    "options": {
+      "login": {
+        "type": "string",
+        "name": "login",
+        "title": "Login",
+        "description": "Login",
+        "default": "nothing",
+        "required": true,
+        "encode": true,
+        "hashing": false
+      },
+      "password": {
+        "type": "string",
+        "name": "password",
+        "title": "Password",
+        "description": "Password",
+        "default": "nothing",
+        "required": true,
+        "encode": false,
+        "hashing": true
+      }
+    },
+    "events": {
+      "nothing_event": {
+        "name": "nothing_event",
+        "title": "Nothing happens",
+        "description": "Occured when nothign happens",
+        "params": {
+          "param1": {
+            "name": "param1",
+            "title": "Useless parameter"
+          }
+        }
+      }
+    },
+    "operations": {
+      "nothing_op": {
+        "name": "nothing_op",
+        "title": "Do nothing",
+        "description": "Do actually nothing",
+        "params": {
+          "param2": {
+            "name": "param2",
+            "title": "Useless parameter 2"
+          }
+        }
+      }
+    },
+    "vendor": {
+      "name": "jeyroik",
+      "title": "Jey Roik",
+      "description": "Jey Roik",
+      "contacts": {
+        "email": "jeyroik@gmail.com"
+      }
+    }
+  }
