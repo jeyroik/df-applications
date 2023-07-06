@@ -36,4 +36,6 @@ interface IInstanceService extends IItem
     public function updateInstanceInfo(IInstanceInfo $info): void;
 
     public function updateInstance(IInstance &$instance, array $data, array $options): bool;
+
+    public function updateInstanceVersion(string $instanceId): bool;
 }

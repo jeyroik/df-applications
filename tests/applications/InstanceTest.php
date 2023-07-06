@@ -13,9 +13,9 @@ use extas\components\extensions\Extension;
 use extas\components\plugins\Plugin;
 use extas\components\repositories\RepoItem;
 use extas\components\repositories\TSnuffRepository;
-use \PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use tests\ExtasTestCase;
 use tests\resources\ExtensionStateTest;
 use tests\resources\IExtensionStateTest;
 
@@ -23,84 +23,25 @@ use tests\resources\IExtensionStateTest;
  * Class InstanceTest
  * @author jeyroik <jeyroik@gmail.com>
  */
-class InstanceTest extends TestCase
+class InstanceTest extends ExtasTestCase
 {
     use TSnuffRepository;
 
     public const PATH__SERVICE_JSON = __DIR__ . '/../resources/service.json';
+    public const PATH__SERVICE_JSON_3 = __DIR__ . '/../resources/service.3.json';
     public const PATH__INSTALL = __DIR__ . '/../tmp';
     protected array $serviceConfig = [];
 
-    protected function setUp(): void
-    {
-        putenv("EXTAS__CONTAINER_PATH_STORAGE_LOCK=vendor/jeyroik/extas-foundation/resources/container.dist.json");
-        $this->buildBasicRepos();
-        $this->buildRepo(__DIR__ . '/../../vendor/jeyroik/extas-foundation/resources/', [
-            'applications' => [
-                "namespace" => "tests\\tmp",
-                "item_class" => "deflou\\components\\applications\\Application",
-                "pk" => "name",
-                "aliases" => ["applications", "apps"],
-                "hooks" => [],
-                "code" => [
-                    'create-before' => '\\' . RepoItem::class . '::setId($item);'
-                                    .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'name\']);'
-                ]
-            ]
-        ]);
-
-        $this->buildRepo(__DIR__ . '/../../vendor/jeyroik/extas-foundation/resources/', [
-            'applications_info' => [
-                "namespace" => "tests\\tmp",
-                "item_class" => "deflou\\components\\applications\\info\\AppInfo",
-                "pk" => "id",
-                "aliases" => ["applications_info", "appInfo"],
-                "hooks" => [],
-                "code" => [
-                    'create-before' => '\\' . RepoItem::class . '::setId($item);'
-                                    .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'aid\']);'
-                ]
-            ]
-        ]);
-
-        $this->buildRepo(__DIR__ . '/../../vendor/jeyroik/extas-foundation/resources/', [
-            'instances' => [
-                "namespace" => "tests\\tmp",
-                "item_class" => "deflou\\components\\instances\\Instance",
-                "pk" => "name",
-                "aliases" => ["instances"],
-                "hooks" => [],
-                "code" => [
-                    'create-before' => '\\' . RepoItem::class . '::setId($item);'
-                                    .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'name\']);'
-                ]
-            ]
-        ]);
-
-        $this->buildRepo(__DIR__ . '/../../vendor/jeyroik/extas-foundation/resources/', [
-            'instances_info' => [
-                "namespace" => "tests\\tmp",
-                "item_class" => "deflou\\components\\instances\\InstanceInfo",
-                "pk" => "id",
-                "aliases" => ["instancesInfo", "instances_info", "instancesInfo"],
-                "hooks" => [],
-                "code" => [
-                    'create-before' => '\\' . RepoItem::class . '::setId($item);'
-                                    .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'iid\']);'
-                ]
-            ]
-        ]);
-    }
+    protected array $libsToInstall = [
+        '' => ['php', 'json']
+        //'vendor/lib' => ['php', 'json'] storage ext, extas ext
+    ];
+    protected bool $isNeedInstallLibsItems = true;
+    protected string $testPath = __DIR__;
 
     protected function tearDown(): void
     {
-        $this->dropDatabase(__DIR__);
-        $this->deleteRepo('plugins');
-        $this->deleteRepo('extensions');
-        $this->deleteRepo('applications');
-        $this->deleteRepo('applications_info');
-        $this->deleteRepo('instances');
-        $this->deleteRepo('instances_info');
+        parent::tearDown();
 
         $finder = new Finder();
         $finder->name('composer.*');
@@ -120,14 +61,7 @@ class InstanceTest extends TestCase
             AppWriter::FIELD__INSTALL_PATH => static::PATH__INSTALL,
             AppWriter::FIELD__INSTALL_CHECK => false
         ]);
-        $writer->plugins()->create(new Plugin([
-            Plugin::FIELD__CLASS => PluginUpdateAppInfoInstances::class,
-            Plugin::FIELD__STAGE => IStageInstanceCreated::NAME
-        ]));
-        $writer->plugins()->create(new Plugin([
-            Plugin::FIELD__CLASS => PluginUpdateAppInfoDelta::class,
-            Plugin::FIELD__STAGE => IStageInstanceInfoUpdated::NAME
-        ]));
+
         $writer->extensions()->create(new Extension([
             Extension::FIELD__CLASS => ExtensionStateTest::class,
             Extension::FIELD__SUBJECT => EStates::SUBJECT,
@@ -197,5 +131,16 @@ class InstanceTest extends TestCase
 
         $this->assertArrayHasKey($app->getId(), $grouped);
         $this->assertCount(1, $grouped[$app->getId()]);
+
+        $writer->updateApp($app->getId(), static::PATH__SERVICE_JSON_3);
+        $updated = $instanceService->updateInstanceVersion($instance->getId());
+        $this->assertTrue($updated, 'Instance is not updated');
+
+        $instance = $instanceService->getInstanceById($instance->getId());
+        $opParams = $instance->buildOperations()->buildOne('nothing_op')->buildParams()->buildAll();
+        $this->assertCount(1, $opParams);
+
+        $opParam = array_shift($opParams);
+        $this->assertEquals('param2', $opParam->getName());
     }
 }

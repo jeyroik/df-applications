@@ -123,18 +123,56 @@ class InstanceService extends Item implements IInstanceService
         }
     }
 
-    public function updateInstance(IInstance &$instance, array $data, array $options): bool
+    public function updateInstanceVersion(string $instanceId): bool
     {
-        foreach ($data as $name => $value) {
-            if (isset($instance[$name])) {
-                $instance[$name] = $value;
+        $instance = $this->getInstanceById($instanceId);
+        $app = $instance->getApplication();
+
+        if ($instance->compareVersionTo($app->getVersion(), '>=')) {
+            return false;
+        }
+
+        $appOptions = $app->getOptions();
+        $insOptions = $instance->getOptions();
+
+        foreach ($insOptions as $name => $data) {
+            if (!isset($appOptions[$name])) {
+                unset($insOptions[$name]);
             }
         }
 
+        foreach ($appOptions as $name => $data) {
+            if (!isset($insOptions[$name])) {
+                $insOptions[$name] = $data;
+            }
+        }
+
+        return $this->updateInstance(
+            $instance, 
+            [
+                Instance::FIELD__AVATAR => $app->getAvatar(),
+                Instance::FIELD__EVENTS => $app->getEvents(),
+                Instance::FIELD__OPERATIONS => $app->getOperations(),
+                Instance::FIELD__RESOLVER => $app->getResolver(),
+                Instance::FILED__VERSION => $app->getVersion(),
+                Instance::FIELD__OPTIONS => $insOptions
+            ], 
+            []
+        );
+    }
+
+    public function updateInstance(IInstance &$instance, array $data, array $options): bool
+    {
         $srcOptions = $instance->getOptions();
         foreach ($options as $name => $value) {
             if (isset($srcOptions[$name])) {
                 $srcOptions[$name][IOption::FIELD__VALUE] = $value;
+            }
+        }
+        
+        foreach ($data as $name => $value) {
+            if (isset($instance[$name])) {
+                $instance[$name] = $value;
             }
         }
 
