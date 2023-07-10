@@ -1,3 +1,7 @@
+# 4.2.1
+
+- Added default app values as values for instance on creating.
+
 # 4.2.0
 
 - Added `IInstanceService::updateInstanceVersion(string $instanceId): bool`.

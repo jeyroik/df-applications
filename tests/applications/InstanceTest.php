@@ -83,6 +83,9 @@ class InstanceTest extends ExtasTestCase
         $this->assertNotNull($instance);
         $this->assertEquals($app->getResolver(), $instance->getResolver());
 
+        $this->assertEquals('nothing', $instance->buildOptions()->buildOne('login')->getValue());
+
+
         $info = $instanceService->getInstanceInfo($instance->getId());
         $this->assertNotNull($info);
 
