@@ -60,7 +60,7 @@ class InstanceService extends Item implements IInstanceService
             Instance::FIELD__NAME => $app->getName() . '_' . Uuid::uuid4()->toString(),
             Instance::FIELD__DESCRIPTION => $app->getDescription(),
             Instance::FIELD__TITLE => $app->getTitle(),
-            Instance::FIELD__OPTIONS => $app->getOptions(),
+            Instance::FIELD__OPTIONS => $this->getAppOptionsWithValuesAsDefault($app),
             Instance::FIELD__EVENTS => $app->getEvents(),
             Instance::FIELD__OPERATIONS => $app->getOperations(),
             Instance::FIELD__VENDOR => [IVendor::FIELD__NAME => $vendorName],
@@ -181,6 +181,18 @@ class InstanceService extends Item implements IInstanceService
         $updated = $this->instances()->update($instance);
 
         return $updated ? true : false;
+    }
+
+    protected function getAppOptionsWithValuesAsDefault(IApplication $app): array
+    {
+        $instancesOptions = $app->getOptions();
+        $appOptions = $app->buildOptions()->buildAll();
+
+        foreach ($appOptions as $name => $option) {
+            $instancesOptions[$name][IOption::FIELD__VALUE] = $option->getDefault();
+        }
+
+        return $instancesOptions;
     }
 
     protected function createInstanceInfo(IApplication $app, IInstance $instance): ?IInstanceInfo
