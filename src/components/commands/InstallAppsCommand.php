@@ -8,6 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use deflou\components\applications\AppReader;
 use deflou\components\applications\AppWriter;
 use deflou\components\applications\EStates;
+use Symfony\Component\Filesystem\Filesystem;
 
 class InstallAppsCommand extends Command
 {
@@ -73,6 +74,10 @@ class InstallAppsCommand extends Command
             $end = time() - $start;
             $output->writeln(['Ready for ' . $end . ' s.']);
         }
+
+        $fs = new Filesystem();
+        $fs->chmod([$path . '/composer.json', $path . '/composer.lock'], 0777);
+        $fs->chmod($path . '/vendor', 0777, recursive: true);
 
         return 0;
     }

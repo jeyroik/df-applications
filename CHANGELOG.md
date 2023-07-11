@@ -1,3 +1,7 @@
+# 4.2.2
+
+- Added rights to sub-composer and sub-vendor on command app install. 
+
 # 4.2.1
 
 - Added default app values as values for instance on creating.
