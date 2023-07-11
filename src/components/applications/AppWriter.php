@@ -12,6 +12,8 @@ use deflou\components\applications\info\AppInfo;
 use deflou\interfaces\applications\IApplication;
 use deflou\interfaces\applications\IAppWriter;
 use deflou\interfaces\applications\info\IAppInfo;
+use extas\components\commands\InstallCommand;
+use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -73,6 +75,7 @@ class AppWriter extends Item implements IAppWriter
             if ($installed) {
                 $app->setState(EStates::Accepted->value);
                 $this->applications()->update($app);
+                $this->installAppExtasEntities();
             }
         }
 
@@ -104,6 +107,24 @@ class AppWriter extends Item implements IAppWriter
         $this->config[static::FIELD__INSTALL_CHECK] = $need;
 
         return $this;
+    }
+
+    protected function installAppExtasEntities(): void
+    {
+        $input = new ArrayInput([
+            'command' => 'install',
+            '-t' => getenv('DF__TEMPLATE_PATH') ?: 'vendor/jeyroik/extas-foundation/resources',
+            '-s' => getenv('DF__SAVE_PATH') ?: 'runtime',
+            '-p' => getenv('DF__SAVE_PATH') ?: 'runtime'
+        ]);
+        
+        $output = new BufferedOutput(BufferedOutput::VERBOSITY_VERY_VERBOSE);
+        
+        $application = new ConsoleApplication();
+        $application->add(new InstallCommand());
+        $application->setDefaultCommand('install');
+        $application->setAutoExit(false);
+        $application->run($input, $output);
     }
 
     protected function createInfo(IApplication $app): IAppInfo

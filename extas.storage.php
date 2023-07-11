@@ -51,5 +51,15 @@ return [
                 'all-after' => 'foreach ($result as $index => $item) { $item->resetDelta(); $result[$index] = $item; }'
             ]
         ],
+    ],
+    "envs" => [
+        "DF__TEMPLATE_PATH" => [
+            "description" => "Current DeFlou template path",
+            "default" => "vendor/jeyroik/extas-foundation/resources"
+        ],
+        "DF__SAVE_PATH" => [
+            "description" => "Current DeFlou save path",
+            "default" => "runtime"
+        ],
     ]
 ];

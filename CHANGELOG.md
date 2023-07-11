@@ -1,3 +1,7 @@
+# 4.2.3
+
+- Added installing extas-entities for applications.
+
 # 4.2.2
 
 - Added rights to sub-composer and sub-vendor on command app install. 

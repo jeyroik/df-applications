@@ -8,6 +8,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use deflou\components\applications\AppReader;
 use deflou\components\applications\AppWriter;
 use deflou\components\applications\EStates;
+use extas\components\commands\InstallCommand;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Filesystem\Filesystem;
 
 class InstallAppsCommand extends Command
@@ -79,6 +83,26 @@ class InstallAppsCommand extends Command
         $fs->chmod([$path . '/composer.json', $path . '/composer.lock'], 0777);
         $fs->chmod($path . '/vendor', 0777, recursive: true);
 
+        $this->installAppExtasEntities($path);
+
         return 0;
+    }
+
+    protected function installAppExtasEntities(string $pathWithPackages): void
+    {
+        $input = new ArrayInput([
+            'command' => 'install',
+            '-t' => getenv('DF__TEMPLATE_PATH') ?: 'vendor/jeyroik/extas-foundation/resources',
+            '-s' => getenv('DF__SAVE_PATH') ?: 'runtime',
+            '-p' => $pathWithPackages
+        ]);
+        
+        $output = new BufferedOutput(BufferedOutput::VERBOSITY_VERY_VERBOSE);
+        
+        $application = new Application();
+        $application->add(new InstallCommand());
+        $application->setDefaultCommand('install');
+        $application->setAutoExit(false);
+        $application->run($input, $output);
     }
 }
