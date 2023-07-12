@@ -83,13 +83,15 @@ class InstallAppsCommand extends Command
         $fs->chmod([$path . '/composer.json', $path . '/composer.lock'], 0777);
         $fs->chmod($path . '/vendor', 0777, recursive: true);
 
-        $this->installAppExtasEntities($path);
+        $this->installAppExtasEntities($path, $output);
 
         return 0;
     }
 
-    protected function installAppExtasEntities(string $pathWithPackages): void
+    protected function installAppExtasEntities(string $pathWithPackages, OutputInterface $output): void
     {
+        $output->writeln(['Installing extas entities...']);
+
         $input = new ArrayInput([
             'command' => 'install',
             '-t' => getenv('DF__TEMPLATE_PATH') ?: 'vendor/jeyroik/extas-foundation/resources',
@@ -97,12 +99,12 @@ class InstallAppsCommand extends Command
             '-p' => $pathWithPackages
         ]);
         
-        $output = new BufferedOutput(BufferedOutput::VERBOSITY_VERY_VERBOSE);
-        
         $application = new Application();
         $application->add(new InstallCommand());
         $application->setDefaultCommand('install');
         $application->setAutoExit(false);
         $application->run($input, $output);
+
+        $output->writeln(['Installation finished']);
     }
 }
