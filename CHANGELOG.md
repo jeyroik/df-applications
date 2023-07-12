@@ -1,3 +1,7 @@
+# 4.2.8
+
+- Turn extas php config convertation on.
+
 # 4.2.7
 
 - Added converting extas php configs.
