@@ -84,12 +84,13 @@ class InstallAppsCommand extends Command
         $fs->chmod([$path . '/composer.json', $path . '/composer.lock'], 0777);
         $fs->chmod($path . '/vendor', 0777, recursive: true);
 
-        $this->installAppExtasEntities($path, $output);
+        $this->convertExtasPhpConfigs($output);
+        $this->installAppExtasEntities($output);
 
         return 0;
     }
 
-    protected function installAppExtasEntities(string $pathWithPackages, OutputInterface $output): void
+    protected function installAppExtasEntities(OutputInterface $output): void
     {
         $settings = [
             'command' => 'install',
