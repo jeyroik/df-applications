@@ -1,3 +1,7 @@
+# 4.2.4
+
+- Use app install output for extas entities installation too.
+
 # 4.2.3
 
 - Added installing extas-entities for applications.
