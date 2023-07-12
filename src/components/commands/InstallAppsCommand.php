@@ -105,13 +105,8 @@ class InstallAppsCommand extends Command
             $output->writeln([$name . ' ' . $value]);
         }
 
-        $input = new ArrayInput($settings);
-        
-        $application = new Application();
-        $application->add(new InstallCommand());
-        $application->setDefaultCommand('install');
-        $application->setAutoExit(false);
-        $application->run($input, $output);
+        $appService = new AppWriter();
+        $appService->installExtasPackages($settings, $output);
 
         $output->writeln(['[OK] Application installation finished']);
     }
@@ -129,13 +124,8 @@ class InstallAppsCommand extends Command
             $output->writeln([$name . ' ' . $value]);
         }
 
-        $input = new ArrayInput($settings);
-        
-        $application = new Application();
-        $application->add(new GenerateCommand());
-        $application->setDefaultCommand('g');
-        $application->setAutoExit(false);
-        $application->run($input, $output);
+        $appService = new AppWriter();
+        $appService->convertExtasPhpConfigs($settings, $output);
 
         $output->writeln(['[OK] Extas php config convvertation finished']);
     }

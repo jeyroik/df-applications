@@ -1,3 +1,7 @@
+# 4.2.9
+
+- Added extas php config convertation into `AppWriter`.
+
 # 4.2.8
 
 - Turn extas php config convertation on.
