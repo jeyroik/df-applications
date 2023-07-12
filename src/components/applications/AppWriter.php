@@ -12,10 +12,12 @@ use deflou\components\applications\info\AppInfo;
 use deflou\interfaces\applications\IApplication;
 use deflou\interfaces\applications\IAppWriter;
 use deflou\interfaces\applications\info\IAppInfo;
+use extas\components\commands\GenerateCommand;
 use extas\components\commands\InstallCommand;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @method IRepository applications()
@@ -75,7 +77,16 @@ class AppWriter extends Item implements IAppWriter
             if ($installed) {
                 $app->setState(EStates::Accepted->value);
                 $this->applications()->update($app);
-                $this->installAppExtasEntities();
+                $this->convertExtasPhpConfigs([
+                    'command' => 'g',
+                    '-p' => getenv('DF__SAVE_PATH') ?: 'runtime'
+                ]);
+                $this->installExtasPackages([
+                    'command' => 'install',
+                    '-t' => getenv('DF__TEMPLATE_PATH') ?: 'vendor/jeyroik/extas-foundation/resources',
+                    '-s' => getenv('DF__SAVE_PATH') ?: 'runtime',
+                    '-p' => getenv('EXTAS__APPLICATION_PATH') ?: getcwd()
+                ]);
             }
         }
 
@@ -109,20 +120,26 @@ class AppWriter extends Item implements IAppWriter
         return $this;
     }
 
-    protected function installAppExtasEntities(): void
+    public function installExtasPackages(array $settings, OutputInterface $output = null): void
     {
-        $input = new ArrayInput([
-            'command' => 'install',
-            '-t' => getenv('DF__TEMPLATE_PATH') ?: 'vendor/jeyroik/extas-foundation/resources',
-            '-s' => getenv('DF__SAVE_PATH') ?: 'runtime',
-            '-p' => getenv('DF__SAVE_PATH') ?: 'runtime'
-        ]);
-        
-        $output = new BufferedOutput(BufferedOutput::VERBOSITY_VERY_VERBOSE);
+        $input = new ArrayInput($settings);
+        $output = $output ?: new BufferedOutput(BufferedOutput::VERBOSITY_VERY_VERBOSE);
         
         $application = new ConsoleApplication();
         $application->add(new InstallCommand());
         $application->setDefaultCommand('install');
+        $application->setAutoExit(false);
+        $application->run($input, $output);
+    }
+
+    public function convertExtasPhpConfigs(array $settings, OutputInterface $output = null): void
+    {
+        $input = new ArrayInput($settings);
+        $output = $output ?: new BufferedOutput(BufferedOutput::VERBOSITY_VERY_VERBOSE);
+        
+        $application = new ConsoleApplication();
+        $application->add(new GenerateCommand());
+        $application->setDefaultCommand('g');
         $application->setAutoExit(false);
         $application->run($input, $output);
     }
