@@ -1,3 +1,11 @@
+# 4.2.6
+
+- Use cwd for searching extas packages.
+
+# 4.2.5
+
+- Detailed extas packages search path.
+
 # 4.2.4
 
 - Use app install output for extas entities installation too.
