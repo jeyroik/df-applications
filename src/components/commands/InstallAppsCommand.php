@@ -90,19 +90,20 @@ class InstallAppsCommand extends Command
 
     protected function installAppExtasEntities(string $pathWithPackages, OutputInterface $output): void
     {
-        $output->writeln([
-            'Installing extas entities with the next options:',
-            '-t ' . getenv('DF__TEMPLATE_PATH') ?: 'vendor/jeyroik/extas-foundation/resources',
-            '-s ' . getenv('DF__SAVE_PATH') ?: 'runtime',
-            '-p ' . $pathWithPackages . '/vendor'
-        ]);
-
-        $input = new ArrayInput([
+        $settings = [
             'command' => 'install',
             '-t' => getenv('DF__TEMPLATE_PATH') ?: 'vendor/jeyroik/extas-foundation/resources',
             '-s' => getenv('DF__SAVE_PATH') ?: 'runtime',
-            '-p' => $pathWithPackages . '/vendor'
-        ]);
+            '-p' => getcwd()
+        ];
+
+        $output->writeln(['Installing extas entities with the next options:']);
+
+        foreach ($settings as $name => $value) {
+            $output->writeln([$name . ' ' . $value]);
+        }
+
+        $input = new ArrayInput($settings);
         
         $application = new Application();
         $application->add(new InstallCommand());
