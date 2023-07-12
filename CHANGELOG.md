@@ -1,3 +1,7 @@
+# 4.2.7
+
+- Added converting extas php configs.
+
 # 4.2.6
 
 - Use cwd for searching extas packages.

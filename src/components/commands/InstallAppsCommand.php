@@ -8,6 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use deflou\components\applications\AppReader;
 use deflou\components\applications\AppWriter;
 use deflou\components\applications\EStates;
+use extas\components\commands\GenerateCommand;
 use extas\components\commands\InstallCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -112,5 +113,29 @@ class InstallAppsCommand extends Command
         $application->run($input, $output);
 
         $output->writeln(['[OK] Application installation finished']);
+    }
+
+    protected function convertExtasPhpConfigs(OutputInterface $output): void
+    {
+        $settings = [
+            'command' => 'g',
+            '-p' => getenv('DF__SAVE_PATH') ?: 'runtime',
+        ];
+
+        $output->writeln(['Converting extas php configs with the next options:']);
+
+        foreach ($settings as $name => $value) {
+            $output->writeln([$name . ' ' . $value]);
+        }
+
+        $input = new ArrayInput($settings);
+        
+        $application = new Application();
+        $application->add(new GenerateCommand());
+        $application->setDefaultCommand('g');
+        $application->setAutoExit(false);
+        $application->run($input, $output);
+
+        $output->writeln(['[OK] Extas php config convvertation finished']);
     }
 }

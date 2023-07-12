@@ -5,6 +5,7 @@
     "jeyroik/extas-id": "0.*",
     "jeyroik/extas-exceptions": "0.*",
     "jeyroik/extas-foundation": "6.*",
+    "jeyroik/extas-config-php": "0.*",
     "composer/composer": "2.5.*"
   },
   "require-dev": {
