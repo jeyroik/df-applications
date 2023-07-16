@@ -1,3 +1,7 @@
+# 4.3.0
+
+- Added instance options encryption and hashing.
+
 # 4.2.9
 
 - Added extas php config convertation into `AppWriter`.

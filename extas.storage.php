@@ -1,5 +1,6 @@
 <?php
 
+use deflou\components\applications\options\OptionItem;
 use extas\components\repositories\RepoItem;
 
 return [
@@ -36,6 +37,15 @@ return [
             "code" => [
                 'create-before' => '\\' . RepoItem::class . '::setId($item);'
                                   .'\\' . RepoItem::class . '::throwIfExist($this, $item, [\'name\']);'
+                                  .'\\' . OptionItem::class . '::encryptOptions($item);'
+                                  .'\\' . OptionItem::class . '::hashOptions($item);',
+                'create-after' => '\\' . OptionItem::class . '::decryptOptions($result);',
+
+                'update-before' => '\\' . OptionItem::class . '::encryptOptions($item);'
+                                  .'\\' . OptionItem::class . '::hashOptions($item);',
+                                  
+                'one-after' => '\\' . OptionItem::class . '::decryptOptions($result);',
+                'all-after' => 'foreach ($result as $index => $item) { \\'.OptionItem::class.'::decryptOptions($item); $result[$index] = $item; }'
             ]
         ],
         "instances_info" => [

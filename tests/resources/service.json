@@ -15,7 +15,7 @@
         "description": "Login",
         "default": "nothing",
         "required": true,
-        "encode": true,
+        "encode": false,
         "hashing": false
       },
       "password": {
@@ -27,6 +27,16 @@
         "required": true,
         "encode": false,
         "hashing": true
+      },
+      "token": {
+        "type": "string",
+        "name": "token",
+        "title": "Token",
+        "description": "Token",
+        "default": "nothing",
+        "required": true,
+        "encode": true,
+        "hashing": false
       }
     },
     "events": {
