@@ -3,6 +3,7 @@
 use deflou\components\applications\AppReader;
 use deflou\components\applications\AppWriter;
 use deflou\components\applications\EStates;
+use deflou\components\applications\options\OptionItem;
 use deflou\components\instances\InstanceService;
 use deflou\components\plugins\applications\PluginUpdateAppInfoDelta;
 use deflou\components\plugins\applications\PluginUpdateAppInfoInstances;
@@ -13,6 +14,8 @@ use extas\components\extensions\Extension;
 use extas\components\plugins\Plugin;
 use extas\components\repositories\RepoItem;
 use extas\components\repositories\TSnuffRepository;
+use extas\components\secrets\Secret;
+use extas\interfaces\secrets\ISecret;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use tests\ExtasTestCase;
@@ -33,7 +36,9 @@ class InstanceTest extends ExtasTestCase
     protected array $serviceConfig = [];
 
     protected array $libsToInstall = [
+        'jeyroik/extas-secrets' => ['php', 'php'],
         '' => ['php', 'json']
+        
         //'vendor/lib' => ['php', 'json'] storage ext, extas ext
     ];
     protected bool $isNeedInstallLibsItems = true;
@@ -78,13 +83,27 @@ class InstanceTest extends ExtasTestCase
         $appInfo = $reader->getAppInfo($app->getId());
         $this->assertNotNull($appInfo);
 
-        $instanceService = new InstanceService();
+        $instanceService = new InstanceService();        
         $instance = $instanceService->createInstanceFromApplication($app, 'jeyroik2');
         $this->assertNotNull($instance);
         $this->assertEquals($app->getResolver(), $instance->getResolver());
 
         $this->assertEquals('nothing', $instance->buildOptions()->buildOne('login')->getValue());
+        $this->assertNotEquals('nothing', $instance->buildOptions()->buildOne('password')->getValue(), 'Hashing before create is not working');
+        $this->assertEquals('nothing', $instance->buildOptions()->buildOne('token')->getValue(), 'Decryption after create is not working');
 
+        $opItem = new OptionItem();
+        $secret = $opItem->secrets()->one([ISecret::FIELD__NAME => $instance->getName() . '.token']);
+        $this->assertNotNull($secret);
+        $this->assertNotEquals('nothing', $secret->getValue(), 'Encryption is broken');
+
+        $iOps = $instance->buildOptions();
+        $iOps['token'] = $iOps->buildOne('token')->setValue('nothing_new')->__toArray();
+        $instance[$instance::FIELD__OPTIONS] = $iOps->__toArray();
+        $instanceService->instances()->update($instance);
+        $secretNew = $opItem->secrets()->one([ISecret::FIELD__NAME => $instance->getName() . '.token']);
+        $this->assertNotNull($secretNew);
+        $this->assertNotEquals($secretNew->getValue(), $secret->getValue(), 'Encryption is broken on update');
 
         $info = $instanceService->getInstanceInfo($instance->getId());
         $this->assertNotNull($info);

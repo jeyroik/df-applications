@@ -3,6 +3,7 @@ namespace deflou\components\instances;
 
 use deflou\components\applications\AppReader;
 use deflou\components\applications\AppWriter;
+use deflou\components\applications\options\OptionItem;
 use deflou\interfaces\applications\IApplication;
 use deflou\interfaces\applications\options\IOption;
 use deflou\interfaces\instances\IInstance;
@@ -72,6 +73,7 @@ class InstanceService extends Item implements IInstanceService
          * @var IInstance $instance
          */
         $instance = $this->instances()->create($instance);
+        
         $this->createInstanceInfo($app, $instance);
 
         foreach ($this->getPluginsByStage(IStageInstanceCreated::NAME) as $plugin) {
