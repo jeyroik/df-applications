@@ -1,3 +1,7 @@
+# 4.3.1
+
+- Fixed install command.
+
 # 4.3.0
 
 - Added instance options encryption and hashing.

@@ -78,14 +78,14 @@ class InstallAppsCommand extends Command
 
             $end = time() - $start;
             $output->writeln(['Ready for ' . $end . ' s.']);
+
+            $fs = new Filesystem();
+            $fs->chmod([$path . '/composer.json', $path . '/composer.lock'], 0777);
+            $fs->chmod($path . '/vendor', 0777, recursive: true);
+
+            $this->convertExtasPhpConfigs($output);
+            $this->installAppExtasEntities($output);
         }
-
-        $fs = new Filesystem();
-        $fs->chmod([$path . '/composer.json', $path . '/composer.lock'], 0777);
-        $fs->chmod($path . '/vendor', 0777, recursive: true);
-
-        $this->convertExtasPhpConfigs($output);
-        $this->installAppExtasEntities($output);
 
         return 0;
     }
